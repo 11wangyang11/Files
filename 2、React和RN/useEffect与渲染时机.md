@@ -172,10 +172,98 @@ export default PopBox;
 **想知道组件渲染完成后触发时机，就一定要知道该组件的渲染受到哪些因素的影响，否则没法知道这个触发时机。影响一个组件渲染的就是props和state。**
 
 # 还没有解释的问题是useEffect和渲染时机是否一致？？？？
-reac渲染
-渲染和useeffect不是一回事。可以在return前log，在useEffect中log。会发现父组件在前和子组件在后的return顺序（理解，毕竟父组件return的时候，才用到子组件。需要理解的地方是，错误的思维是父组件是子组件构建的，所以不知道子组件什么样子，父组件没法渲染。实际上我们要理解成渲染树，树枝由上到下分叉，而不是搭积木，又零件到整体。还有这里即使是渲染树也是虚拟Dom，整个树构建完成后才会真正、整体渲染出来到整个页面上（这一点也需要再证实一下）。），以及先调用子组件useEffect，后调用父组件的useEffect的顺序。这一点目前还不清楚为什么，以及与渲染之间的关系。。。
-可以再结合一下类组件，据说useEffect和componentDidMount一样，它也是子组件调用在先，父组件在后。所以，return或者render与componentDidMount关系？看有博客说是所有渲染完成后开始执行useEffect和生命周期方法。这个过程是从最底层子组件开始的。原因是父组件副作用可能依赖子组件，有待验证。毕竟我理解子组件应该是依赖父组件的。。。
+答案是一致的。useEffect是hook，hook就是与渲染时机挂钩的。但是，是整体渲染完后依次执行useEffect还是渲染一个组件就执行当前useEffect？？？首先，渲染和useEffect不是一回事。可以在return前log，在useEffect中log。会发现父组件在前和子组件在后的return顺序（理解，毕竟父组件return的时候，才用到子组件。需要理解的地方是，错误的思维是父组件是子组件构建的，所以不知道子组件什么样子，父组件没法渲染。实际上我们要理解成渲染树，树枝由上到下分叉，而不是搭积木，又零件到整体。还有这里即使是渲染树也是虚拟Dom，整个树构建完成后才会真正、整体渲染出来到整个页面上（这一点也需要再证实一下）。），以及先调用子组件useEffect，后调用父组件的useEffect的顺序。 
 
-**所以，这里先给一个自己目前认为的结论，子组件渲染完毕后，会触发父组件的useEffect，所以在父组件useEffect中获取子组件渲染后样式是可行的，所以上面几个代码，又是担心父组件拿不到子组件渲染后样式；又是拆分出子组件，为了使用它的useEffect，全都是瞎整。只要父组件能知道且可以拿到子组件渲染影响因素，直接使用useEffect就行了。本例中，父组件可以拿到子组件重新渲染的所有影响因素。**
+# 上面问题，给出一个结论：
+在 React 中，`useEffect` 的执行时机是组件渲染并挂载到 DOM 后。对于包含子组件的情况，React 会按照组件树的深度优先顺序来渲染组件，并在“整个组件树”渲染完成后，再依次执行各个组件的 `useEffect` 钩子。如下：   
+
+1. **渲染顺序**：React 会先渲染父组件，然后再渲染子组件。渲染是一个同步过程，即父组件和子组件会在一次渲染周期内完成渲染。
+2. **`useEffect` 执行顺序**：在整个组件树渲染完成后，React 会依次执行每个组件的 `useEffect` 钩子。具体来说，React 会先渲染完所有组件，然后再执行这些组件的 `useEffect`。
+
+### 示例
+以下是一个示例，展示了父组件和子组件中 `useEffect` 的执行顺序：
+
+```javascript
+import React, { useEffect } from 'react';
+
+const ChildComponent = () => {
+  useEffect(() => {
+    console.log('ChildComponent useEffect');
+    return () => {
+      console.log('ChildComponent cleanup');
+    };
+  }, []);
+
+  return <div>Child Component</div>;
+};
+
+const ParentComponent = () => {
+  useEffect(() => {
+    console.log('ParentComponent useEffect');
+    return () => {
+      console.log('ParentComponent cleanup');
+    };
+  }, []);
+
+  return (
+    <div>
+      Parent Component
+      <ChildComponent />
+    </div>
+  );
+};
+
+const App = () => {
+  return (
+    <div>
+      <ParentComponent />
+    </div>
+  );
+};
+
+export default App;
+```
+
+在这个示例中，当 `App` 组件首次渲染时，React 会按照以下顺序执行：
+
+1. 渲染 `App` 组件。
+2. 渲染 `ParentComponent` 组件。
+3. 渲染 `ChildComponent` 组件。
+
+渲染完成后，React 会依次执行 `useEffect` 钩子：
+
+1. 执行 `ChildComponent` 的 `useEffect`。
+2. 执行 `ParentComponent` 的 `useEffect`。
+
+控制台输出将会是：
+
+```
+ChildComponent useEffect
+ParentComponent useEffect
+```
+
+### 原因
+这种行为的原因是为了确保子组件的副作用在父组件的副作用之前完成。这样可以避免父组件的副作用依赖于子组件的状态，而子组件的状态还没有更新的情况。实际上在 React 中，`useEffect` 的执行顺序是从子组件到父组件。这是因为 React 在完成所有组件的渲染之后，会按照组件的销毁顺序来执行 `useEffect` 钩子，这个顺序恰好是从最内层的子组件到最外层的父组件。
+
+### 具体执行顺序
+1. **渲染顺序**：React 会先渲染父组件，然后再渲染子组件。
+2. **`useEffect` 执行顺序**：在组件渲染完成后，React 会按照组件树的深度优先顺序，从内到外执行 `useEffect` 钩子。
+
+### 总结
+- React 会先渲染父组件，然后再渲染子组件。
+- 在渲染完成后，React 会按照组件树的深度优先顺序，从内到外执行 `useEffect` 钩子。
+- 这种顺序确保了子组件的副作用在父组件的副作用之前完成，从而避免潜在的依赖问题。 
+
+
+**所以，父组件useEffect中获取子组件渲染后样式是可行的，所以上面几个代码，又是担心父组件拿不到子组件渲染后样式；又是拆分出子组件，为了使用它的useEffect，全都是瞎整。只要父组件能知道且可以拿到子组件渲染影响因素，直接使用useEffect就行了。本例中，父组件可以拿到子组件重新渲染的所有影响因素。**
+
+最后再提一下useEffect的清理函数。但这里需要明确区分两个概念：**挂载（mount）** 和 **卸载（unmount）**。
+
+### 挂载顺序
+当组件首次渲染时，React 会按照组件树的深度优先顺序进行挂载，并在挂载完成后依次执行 `useEffect` 钩子。这个顺序是从最内层的子组件到最外层的父组件。
+
+### 卸载顺序
+当组件被卸载时，React 会按照组件树的深度优先顺序进行卸载，并在卸载之前依次执行 `useEffect` 的清理函数（如果有）。这个顺序是从最外层的父组件到最内层的子组件。
+
 
 
