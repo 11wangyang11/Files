@@ -145,6 +145,7 @@ function useEventCallback(fn, dependencies) {
 
 **核心观点：useCallback不应该用来缓存函数用的，函数创建很简单；而应该与memo来避免很重的子组件进行不必要更新的问题。**
 
+
 ### 参考文献：
 1. [官方指南](https://zh-hans.react.dev/reference/react/useCallback#every-time-my-component-renders-usecallback-returns-a-different-function)
 
