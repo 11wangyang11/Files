@@ -1,8 +1,9 @@
 背景：但是为什么项目总是使用Babel等编译器或转换工具，将代码编译成ES5的JavaScript代码呢？理一理ECMAScript、JS、TS以及ESModules的关系。
 
 ### 一、TS、JS和ES的关系
-TypeScript（TS）是由微软开发的一种编程语言，它是 JavaScript 的超集，主要增加了静态类型和其他一些特性。TypeScript 编译器（tsc）会**将 TypeScript 代码编译为标准的 JavaScript 代码**，以便在任何支持 JavaScript 的环境中运行。
-*具体来说：*
+TypeScript（TS）是由微软开发的一种编程语言，它是 JavaScript 的超集，主要增加了静态类型和其他一些特性。TypeScript 编译器（tsc）会**将 TypeScript 代码编译为标准的 JavaScript 代码**，以便在任何支持 JavaScript 的环境中运行。   
+
+**具体来说：**
 
 **1、语法和特性：**
 1. TypeScript 支持 ES6 及其后续版本的大多数语法和特性，例如箭头函数、类、模板字符串、解构赋值、模块系统等，当然也支持ES6之前的语法。
@@ -47,7 +48,7 @@ console.log(x); // 输出 10
 
 **既然ECMAScript：定义了 JavaScript 的核心语法和功能，那非核心的语法和功能呢？**
 前面提到，ECMAScript 定义了 JavaScript 的核心语法和功能，但在实际使用中，JavaScript 还包含了一些非核心的语法和功能，这些通常由运行环境（例如浏览器或 Node.js）提供。上面JavaScript中的`console.log(x);`其实就是浏览器或者 Node.js提供的功能。当然，这里`console`浏览器和 Node.js均提供了这个功能，还有`setTimeout、setInterval`等。还有一些功能是浏览器或者 Node.js单独的功能，比如浏览器提供的`window`等。具体关系如下图：
-[ECMAScript与Node.js/浏览器关系图](https://ibb.co/2Y5r4Wb)
+![ECMAScript与Node.js/浏览器关系图](https://ibb.co/2Y5r4Wb)   
 
 这里再细说一下，浏览器还包括了：
 1. 浏览器对象模型（Browser Object Model，简称 BOM），也就是 window 对象
@@ -98,7 +99,8 @@ sayHello(john);
 ### 二、TS扩展语法
 前面提到，TS是JS的超集。TypeScript 还增加了一些 JavaScript 中没有的特性，例如接口、类型注解、枚举、元组等。以下是一些 TypeScript 特性及其具体示例：
 
-**1. 类型注解**
+**1. 类型注解** 
+
 类型注解允许你在变量、函数参数和返回值中指定类型。
 ```ts
 let age: number = 30;
@@ -111,7 +113,8 @@ function greet(person: string): string {
 console.log(greet(name)); // 输出 "Hello, Alice"
 ```
 
-**2. 接口**
+**2. 接口** 
+
 接口用于定义对象的结构，可以用于类型检查。
 ```ts
 interface Person {
@@ -131,7 +134,8 @@ function printPerson(person: Person): void {
 printPerson(user); // 输出 "Bob is 25 years old."
 ```
 
-**3. 枚举**
+**3. 枚举** 
+
 枚举用于定义一组命名常量。这里要注意的是，JS没有枚举，通常是通过对象来模拟枚举的行为。
 ```ts
 enum Color {
@@ -154,7 +158,8 @@ let c = Color.Green;
 console.log(c); // 输出 1
 ```
 
-**4. 元组**
+**4. 元组** 
+
 元组用于定义一个已知数量和类型的数组。
 ```ts
 let tuple: [string, number];
@@ -166,7 +171,8 @@ console.log(tuple[1]); // 输出 10
 let tuple: [string, number];
 ```
 
-**5. 泛型**
+**5. 泛型** 
+
 泛型允许你创建可重用的组件，这些组件可以适用于多种类型。
 ```ts
 function identity<T>(arg: T): T {
@@ -180,7 +186,8 @@ console.log(output1); // 输出 "myString"
 console.log(output2); // 输出 42
 ```
 
-**6. 类和继承**
+**6. 类和继承** 
+
 TypeScript 增强了对类和继承的支持，使其更接近于面向对象编程语言。
 ```ts
 class Animal {
@@ -206,7 +213,8 @@ dog.bark(); // 输出 "Woof! Woof!"
 dog.move(10); // 输出 "Buddy moved 10 meters."
 ```
 
-**7. 类型别名**
+**7. 类型别名** 
+
 类型别名用于为类型创建新的名称。
 ```ts
 type StringOrNumber = string | number;
