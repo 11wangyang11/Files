@@ -343,4 +343,4 @@ exec('ls -l', (error, stdout, stderr) => {
 2. [libuv之 - 只看这篇是不够的](https://juejin.cn/post/6945702722645524517#heading-7)
 3. [一步步分析 Node.js 的异步I/O机制](https://juejin.cn/post/6844903859094028301)
 4. [nodejs源码分析](https://github.com/fzxa/NodeJS-Nucleus-Plus-Internals)
-
+5. [nodejs官网教程](https://dev.nodejs.cn/learn/)
