@@ -315,7 +315,7 @@ sendPostRequest();
  * 3. User-Agent：标识客户端应用程序。示例：User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)
  * （2）响应头（Response Headers）
  * 1. Content-Type：指定响应体的媒体类型（MIME 类型）。示例：Content-Type: application/json
- * 2. Set-Cookie：设置 cookie。示例：Set-Cookie: sessionId=abc123; Path=/; HttpOnly
+ * 2. Set-Cookie：设置 cookie。示例：Set-Cookie: sessionId=abc123; Path=/; HttpOnly，详情见cookie.md
  * 3. Cache-Control：指示缓存机制。示例：Cache-Control: no-cache
  * （常用http标头：https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers，http相关知识，这里不做细说）
  */
