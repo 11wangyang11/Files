@@ -739,7 +739,84 @@ http.get('http://localhost:8080');
 //   1: finish
 ```
 
-### 四、参考文献
+### 四、阻塞&非阻塞
+Node.js 标准库中所有的 I/O 方法都提供异步版本，非阻塞，接受回调函数。 一些方法也有对应的 阻塞，其名称以 Sync 结尾。我们理所当然优先使用非阻塞方法，阻塞方法一般仅仅在工具调试或者简单的程序中使用，比如：
+```js
+// 阻塞
+const fs = require('fs');
+
+// 使用阻塞方法读取文件
+const data = fs.readFileSync('/path/to/file.txt', 'utf8');
+console.log(data);
+
+// 使用阻塞方法写入文件
+fs.writeFileSync('/path/to/another-file.txt', data);
+```
+上述代码就是举一个简单的例子，说明下一个任务依赖上一个结果的时候，要注意代码的执行顺序。但是实际上，真正在项目中，我们不会怎么写，既然依赖，就应该使用“回调函数”或者 `async/await` 来控制代码的执行顺序。应该如下：
+
+**回调函数** 
+```js
+const fs = require('fs');
+
+// 使用非阻塞方法读取文件
+fs.readFile('/path/to/file.txt', 'utf8', (err, data) => {
+    if (err) {
+        return console.error(err);
+    }
+    console.log(data);
+
+    // 使用非阻塞方法写入文件
+    fs.writeFile('/path/to/another-file.txt', data, (err) => {
+        if (err) {
+            return console.error(err);
+        }
+        console.log('File written successfully');
+    });
+});
+```
+
+**async/await方式**
+```js
+const fs = require('fs').promises;
+
+async function readAndWriteFiles() {
+    try {
+        // 使用非阻塞方法读取文件
+        const data = await fs.readFile('/path/to/file.txt', 'utf8');
+        console.log(data);
+
+        // 使用非阻塞方法写入文件
+        await fs.writeFile('/path/to/another-file.txt', data);
+        console.log('File written successfully');
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+readAndWriteFiles();
+```
+`async/await` 使异步代码看起来像同步代码，极大地提高了代码的可读性和可维护性。并且使用 `try/catch` 语句来处理错误，直观和简洁。“回调函数”如果嵌套过多会导致代码难以阅读和维护，这种现象被称为“回调地狱”，。不过`async/await`需要 ES2017 支持，所以 nodejs 中版本要注意使用新版或者编译器要包含必要的库，如下：
+```js
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "lib": ["ES2021"], // 要包含ES2021库
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
+}
+```
+
+当然，即使项目中版本低于ES2017，也可以使用编译器如 Babel 进行转化...
+
+### 五、参考文献
 1. [nodejs单线程？非阻塞I/O？异步?](https://blog.csdn.net/weixin_45277161/article/details/117331334)
 2. [libuv之 - 只看这篇是不够的](https://juejin.cn/post/6945702722645524517#heading-7)
 3. [一步步分析 Node.js 的异步I/O机制](https://juejin.cn/post/6844903859094028301)
