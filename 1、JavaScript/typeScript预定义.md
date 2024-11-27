@@ -1,88 +1,161 @@
-**TypeScript**是`javaScript`的超集，本质上就是在`javaScript`的基础上增加“预定义”及其相关功能，如类型检查、类型推断、泛型等。下面介绍一下`TypeScript`的预定义和泛型。
+**TypeScript**是`javaScript`的超集，本质上就是在`javaScript`的基础上增加“类型定义”及其相关功能，如类型检查、类型推断、泛型等。下面介绍一下`TypeScript`的预定义和泛型。今天这里主要介绍一下预定义，也就是语言本身或其标准库中已经定义好的类型、接口、函数、对象等，不需要开发者自己定义。
 
 ### 一、预定义
-预定义类型是指在类型定义文件中提前为某些元素或组件定义好类型，以便在使用这些元素或组件时，TypeScript 编译器能够自动推断出正确的类型，而无需显式传入类型参数。预定义包含了接口（interface）、基础类型（如number、string）、枚举、别名（type）、数组和元组、联合类型和交叉类型等等。这里主要介绍两大类，一类是针对原生 HTML 和 DOM 的定义；另一类是常用库 React 提供的类型定义（毕竟我常用的是 React，其他框架自然也会提供属于它的类型定义）。
+预定义类型是指在类型文件中提前为某些元素或组件定义好类型，以便在使用这些元素或组件时，TypeScript 编译器能够自动推断出正确的类型，而无需显式传入类型参数。预定义包含了接口（interface）、基础类型（如number、string）、枚举、别名（type）、数组和元组、联合类型和交叉类型等等。这里主要介绍两大类，一类是针对原生 HTML 和 DOM 的定义；另一类是常用库 React 提供的类型定义（毕竟我常用的是 React，其他框架自然也会提供属于它的类型定义）。
 
-## 1、HTML和DOM类型定义
-TypeScript 提供了一套完整的类型定义，用于描述原生 HTML 元素、DOM API 和浏览器环境中的其他对象。由于我们通常不是直接在原生HTML和DOM上开发，所以下面简单介绍一下。
+## 1、interface和type区别
+预定义的方式最主要就是“接口”和“类型”。TypeScript中，接口`interface`与类型`type`往往都可以互换使用。不同之处是：
 
-**主要内容** 
-
-1. HTML 元素：包括如 HTMLDivElement, HTMLSpanElement, HTMLInputElement 等具体的 HTML 元素类型。
-2. HTML 属性：包括如 HTMLElement, Element, Attributes 等描述 HTML 元素属性的类型。
-3. DOM API：包括如 document, window, Event, Node 等 DOM 操作相关的类型。
-
-下面分别介绍一下：
-# (1) HTML 元素
-HTML 元素是指 HTML 文档中的各种标签。TypeScript 为每种 HTML 元素提供了对应的类型定义，这些类型定义描述了元素的属性和方法。常用 HTML 元素类型定义有：
-
-- HTMLDivElement：对应 <div> 元素
-- HTMLButtonElement：对应 <button> 元素
-- HTMLInputElement：对应 <input> 元素
-- HTMLAnchorElement：对应 <a> 元素
-- HTMLImageElement：对应 <img> 元素 
-
+1. 定义方式不同
 ```ts
-const divElement = document.createElement('div') as HTMLDivElement;
-divElement.className = 'my-class';
-document.body.appendChild(divElement);
-
-const buttonElement = document.createElement('button') as HTMLButtonElement;
-buttonElement.textContent = 'Click me';
-buttonElement.disabled = false;
-document.body.appendChild(buttonElement);
-
-const inputElement = document.createElement('input') as HTMLInputElement;
-inputElement.type = 'text';
-inputElement.value = 'Type here';
-document.body.appendChild(inputElement);
-```
-
-# (2) HTML 属性
-HTML 属性是指 HTML 元素的各种属性。TypeScript 为这些属性提供了类型定义，用于描述属性的类型和用途。常用 HTML 属性类型定义有：
-- className：string
-- id：string
-- style：CSSStyleDeclaration
-- disabled：boolean
-- value：string 
-
-```js
-const inputElement = document.createElement('input') as HTMLInputElement;
-inputElement.type = 'text';
-inputElement.value = 'Type here';
-inputElement.className = 'input-class';
-inputElement.style.color = 'red';
-document.body.appendChild(inputElement);
-
-const buttonElement = document.createElement('button') as HTMLButtonElement;
-buttonElement.textContent = 'Click me';
-buttonElement.disabled = false;
-document.body.appendChild(buttonElement);
-```
-
-# (3) DOM API
-DOM API 是指用于操作和管理 HTML 文档的 JavaScript 接口。TypeScript 为这些接口提供了详细的类型定义，帮助开发者安全地操作 DOM。常用 DOM API 类型定义有：  
-
-- Document：表示整个 HTML 文档
-- Element：表示一个 HTML 元素
-- HTMLElement：表示一个 HTML 元素，包含所有 HTML 元素的通用属性和方法
-- Node：表示 DOM 树中的一个节点
-- Event：表示事件对象
-- NodeList：表示节点列表 
-
-```ts
-const element = document.getElementById('my-element') as HTMLElement;
-
-if (element) {
-  element.innerHTML = 'Hello, TypeScript!';
+interface User {
+    name: string;
+    age: number;
 }
 
-const elements = document.querySelectorAll('.my-class') as NodeListOf<HTMLElement>;
+type User = {
+    name: string;
+    age: number;
+};
+``` 
 
+2. 扩展（继承）
+```ts
+// interface使用extends关键字(此外，interface支持声明合并，即可以多次声明同一个接口，TypeScript会将它们合并，下面会提到)
+interface Person {
+    name: string;
+}
+
+interface Employee extends Person {
+    employeeId: number;
+}
+
+// type使用交叉类型（&）
+type Person = {
+    name: string;
+};
+
+type Employee = Person & {
+    employeeId: number;
+};
+```
+3. 适用范围
+- interface主要用于定义对象的结构。
+- type不仅可以定义对象的结构，还可以定义联合类型、交叉类型、元组等更复杂的类型。
+```ts
+// type用“=”可以进行这种复杂类型的定义，但interface就无法做到了
+type ID = number | string; // 联合类型
+type Coordinates = [number, number]; // 元组
+```
+
+
+## 2、HTML和DOM类型定义
+TypeScript 提供了一套完整的类型定义，用于描述原生 HTML 元素、DOM API 和浏览器环境中的其他对象。由于我们通常不是直接在原生HTML和DOM上开发，所以下面简单介绍一下。
+
+# （1）HTML元素
+在web开发中，浏览器会将HTML解析成DOM树。这里先简单介绍一下DOM结构，如下图：
+```plaintext
+Node
+  └── Element
+        └── HTMLElement
+              └── HTMLDivElement
+```
+基础类型 Node、Element、HTMLElement 外（Element、HTMLElement提供了访问和操作具体元素的方法和属性，这里先不展开介绍），HTML相关的类型主要就是HTMLDivElement、HTMLButtonElement等HTML元素类型。每个元素的属性有差异，如下：
+```ts
+// 获取 <input> 元素
+const inputElement = document.querySelector('input') as HTMLInputElement;
+inputElement.type = 'text';
+inputElement.value = 'Hello, World!';
+inputElement.placeholder = 'Enter text';
+
+// 获取 <img> 元素
+const imageElement = document.querySelector('img') as HTMLImageElement;
+imageElement.src = 'https://www.example.com/image.jpg';
+imageElement.alt = 'Example Image';
+imageElement.width = 300;
+imageElement.height = 200;
+
+// 获取 <button> 元素
+const buttonElement = document.querySelector('button') as HTMLButtonElement;
+buttonElement.disabled = false;
+buttonElement.type = 'submit';
+buttonElement.value = 'Click Me';
+```
+
+那如果我们希望对<button>元素增加一个属性，怎么办? 如下所示：
+
+```ts
+// global.d.ts
+// 扩展 HTMLButtonElement 接口，添加 test 属性
+interface HTMLButtonElement {
+    testid: string;
+}
+
+// 使用
+const buttonElement = document.querySelector('button') as HTMLButtonElement;
+buttonElement.testid = 'button';
+```
+
+这里你是不是很疑惑，为什么`interface HTMLButtonElement { testid: string; }`为什么是扩展`HTMLButtonElement`，而不是重新定义`HTMLButtonElement`？因为interface支持声明合并，即可以多次声明同一个接口，TypeScript会将它们合并。比如：
+```ts
+interface User {
+  name: string;
+}
+
+interface User {
+  age: int;
+}
+
+// 那Typescript会User接口定义为:
+interface User {
+  name: string;
+  age: int;
+}
+```
+接口`interface`可以合并，命名空间`namespace`也可以合并。
+
+# (2) DOM API
+介绍DOM API预定义之前，先再理一下DOM的结构。上面介绍HTML元素类型的时候简单介绍了一下DOM结构。这里再提供一个更加详细的DOM接口继承图，如下：    
+
+```plainText
+Node
+ ├── Document
+ ├── DocumentFragment
+ ├── DocumentType
+ ├── Element
+ │    ├── HTMLElement
+ │    │    ├── HTMLAnchorElement
+ │    │    ├── HTMLButtonElement
+ │    │    ├── HTMLDivElement
+ │    │    ├── HTMLImageElement
+ │    │    ├── HTMLInputElement
+ │    │    ├── HTMLParagraphElement
+ │    │    ├── HTMLSpanElement
+ │    │    ├── HTMLTableElement
+ │    │    ├── HTMLTableRowElement
+ │    │    ├── HTMLTableCellElement
+ │    │    └── ... (其他 HTML 元素)
+ │    ├── SVGElement
+ │    └── ... (其他类型的元素)
+ ├── Attr
+ ├── CharacterData
+ │    ├── Text
+ │    ├── Comment
+ │    └── CDATASection
+ ├── ProcessingInstruction
+ └── ... (其他节点类型)
+```
+
+Document负责提供访问和操作整个文档的方法和属性；Element负责提供访问和操作具体元素的方法和属性。这里介绍与Element同级别的Document，它是访问和操作整个文档的入口点，比如：  
+
+```ts
+// NodeList
+const elements = document.querySelectorAll('.my-class') as NodeListOf<HTMLElement>;
 elements.forEach((el) => {
   el.classList.add('highlight');
 });
 
+// MouseEvent
 document.addEventListener('click', (event: MouseEvent) => {
   console.log('Document clicked:', event);
 });
@@ -90,62 +163,60 @@ document.addEventListener('click', (event: MouseEvent) => {
 
 ### 二、React类型定义
 React 在 HTML 基础上扩展了许多类型定义，以便更好地支持组件化开发和事件处理。以下是一些具体的例子，展示了 React 在 HTML 基础上扩展的类型定义。
-# 1. className vs class
-在原生 HTML 中，使用`class`属性来指定元素的 CSS 类。然而，由于`class`是 JavaScript 中的保留字，React 使用`className`来代替。
+## 1、className vs class
+在原生 HTML 中，使用`class`属性来指定元素的 CSS 类。然而，在 JavaScript 中，class 是一个保留字，用于定义类(如class Button)。为了避免冲突，JSX 使用 `className` 来表示 HTML 元素的类属性。而 JSX 是 JavaScript 的扩展，所以在 JSX 文件中，也只能用`className`表示HTML 元素的类属性。如下：
 
-原生HTML:
+**原生HTML:**
 ```html
-<div class="my-class"></div>
+<style>
+    .my-class {
+        color: red;
+        font-size: 20px;
+    }
+</style>
+<div class="my-class">This is a styled div.</div>
+<script>
+    const element = document.querySelector('.my-class');
+    element.addEventListener('click', () => {
+        alert('Element clicked!');
+    });
+</script>
 ```
-React:
+**JSX**
 ```jsx
+// 这里就不能使用class了
 <div className="my-class"></div>
 ```
-你可能有疑惑，DOM接口`HTMLElement`不是有`className`属性吗？以下是 TypeScript 标准库中关于 HTML 元素的一些定义（简化版）：
+这里说的是JSX，与React有什么关系？因为React支持JSX，使用React写组件一般使用JSX或者TSX。当然你用传统JS写也可以，比如：
 ```js
-// TypeScript's DOM type definitions (simplified)
-interface HTMLElement extends Element {
-  className: string;
-  id: string;
-  style: CSSStyleDeclaration;
-  title: string;
-  // ... more properties
-}
+import React from 'react';
 
-interface HTMLDivElement extends HTMLElement {
-  // Properties specific to <div> elements
-}
-
-interface HTMLSpanElement extends HTMLElement {
-  // Properties specific to <span> elements
-}
-
-// Event handlers
-interface HTMLElementEventMap {
-  click: MouseEvent;
-  mouseenter: MouseEvent;
-  mouseleave: MouseEvent;
-  // ... more events
-}
-```
-在原生JavaScript中，你可以这样使用 className 属性：
-```js
-const element = document.getElementById('my-element');
-element.className = 'my-class';
-```
-在React中，className 属性在JSX中用于指定元素的CSS类，与原生JavaScript中的 className 属性作用相同。以下是一个React组件的例子：
-```jsx
 function MyComponent() {
-  return (
-    <div className="my-class">
-      Hello, World!
-    </div>
-  );
+    return React.createElement('div', null, 'Hello, JavaScript!');
 }
-```
-<div className="my-class"> 是JSX语法，它被React转换为虚拟DOM节点，然后由React负责将其渲染为真实的DOM元素。你不需要手动调用 document.createElement 或设置属性，React会处理这些细节。
 
-你可能疑惑，为什么<div class="my-class">有效，但是<div className="my-class">无效。HTML 规范 vs. DOM 规范？？
+export default MyComponent;
+```
+
+## 2、React类型定义
+上面比较了`className`和`class`，仅仅是解释了在 React 中为什么HTML元素都使用`className`，而不是`class`作为类名的原因。这里开始介绍React类型定义。因为使用React框架，用的都是React框架提供的类型定义。
+
+首先，我在React库的global库的global.d.ts文件中看到如下类型定义：
+```ts
+interface Event { }
+interface AnimationEvent extends Event { }
+interface MouseEvent extends Event { }
+// ...
+
+interface Element { }
+interface HTMLElement extends Element { }
+interface HTMLButtonElement extends HTMLElement { }
+// ...
+```
+为什么React库中要定义一下这些类型？这些不是HTML的的元素、事件类型吗？应该是为了后面方便扩展用的吧！
+
+然后，。。。。。
+
 
 2. 事件处理程序
 React在事件处理程序方面进行了扩展，以便更好地支持合成事件（Synthetic Events）。React的事件处理程序属性名采用驼峰命名法，并且事件处理程序接收的参数是合成事件对象，而不是原生事件对象。
