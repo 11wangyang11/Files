@@ -1,7 +1,7 @@
 **TypeScript**是`javaScript`的超集，本质上就是在`javaScript`的基础上增加“类型定义”及其相关功能，如类型检查、类型推断、泛型等。下面介绍一下`TypeScript`的预定义和泛型。今天这里主要介绍一下预定义，也就是语言本身或其标准库中已经定义好的类型、接口、函数、对象等，不需要开发者自己定义。
 
 ### 一、预定义
-预定义类型是指在类型文件中提前为某些元素或组件定义好类型，以便在使用这些元素或组件时，TypeScript 编译器能够自动推断出正确的类型，而无需显式传入类型参数。预定义包含了接口（interface）、基础类型（如number、string）、枚举、别名（type）、数组和元组、联合类型和交叉类型等等。这里主要介绍两大类，一类是针对原生 HTML 和 DOM 的定义；另一类是常用库 React 提供的类型定义（毕竟我常用的是 React，其他框架自然也会提供属于它的类型定义）。
+预定义类型是指 TypeScript 自带的、在标准库中已经定义好的类型，以便在使用这些元素或组件时，TypeScript 编译器能够自动推断出正确的类型，而无需显式传入类型参数。预定义包含了接口（interface）、基础类型（如number、string）、枚举、别名（type）、数组和元组、联合类型和交叉类型等等。这里主要介绍两大类，一类是TypeScript库针对原生 HTML 和 DOM 提供的预定义；另一类是常用库 React 针对 JSX 语法提供的类型定义。
 
 ## 1、interface和type区别
 预定义的方式最主要就是“接口”和“类型”。TypeScript中，接口`interface`与类型`type`往往都可以互换使用。不同之处是：
@@ -298,152 +298,10 @@ const App = () => {
 export default App;
 ```
 
-你可能疑惑了，我虽然定义了JSX命名空间，但是我并没有在`App.jsx`文件中引入该命名空间。为什么它会使用JSX的类型来理解和检查我的JSX元素类型。原因是，当你使用 JSX 语法时（JSX语法只能在`.jsx` 文件中使用），TypeScript 会隐式地使用 JSX 命名空间的接口来进行类型检查。
-
-## 3、事件处理程序
-React在事件处理程序方面进行了扩展，以便更好地支持合成事件（Synthetic Events）。React的事件处理程序属性名采用驼峰命名法，并且事件处理程序接收的参数是合成事件对象，而不是原生事件对象。
-
-**原生HTML:**
-```html
-<button onclick="handleClick(event)">Click me</button>
-```
-**React:**
-```jsx
-<button onClick={handleClick}>Click me</button>
-```
-3. 特殊属性
-React添加了一些特殊属性，用于控制组件的行为和优化性能。例如，key属性用于唯一标识列表中的每个元素，以便React能够高效地更新和重新渲染列表。
-
-React:
-```jsx
-{items.map(item => (
-  <div key={item.id}>{item.name}</div>
-))}
-```
-4. 扩展的HTML属性
-React还扩展了一些HTML属性，以便更好地支持组件化开发。例如，htmlFor属性用于代替for属性，以避免与JavaScript中的保留字冲突。
-
-原生HTML:
-```html
-<label for="input-id">Label</label>
-<input id="input-id" type="text">
-```
-React:
-```jsx
-<label htmlFor="input-id">Label</label>
-<input id="input-id" type="text">
-```
-
-5. JSX 特性
-React的JSX语法允许你在JavaScript代码中直接编写HTML标记。为了支持这种语法，React在类型定义中添加了一些特性。例如，children属性用于表示组件的子元素。
-
-React:
-```jsx
-<div>
-  <h1>Hello, World!</h1>
-  <p>This is a paragraph.</p>
-</div>
-```
-具体的类型定义示例
-以下是React的类型定义中一些具体的扩展示例：
-
-```jsx
-// React's type definitions (simplified)
-declare namespace React {
-  interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
-    className?: string;
-    id?: string;
-    style?: CSSProperties;
-    title?: string;
-    // ... more attributes
-  }
-
-  interface DOMAttributes<T> {
-    onClick?: MouseEventHandler<T>;
-    onMouseEnter?: MouseEventHandler<T>;
-    onMouseLeave?: MouseEventHandler<T>;
-    // ... more event handlers
-  }
-
-  // Specific element attributes
-  interface DetailedHTMLProps<E extends HTMLAttributes<T>, T> extends HTMLAttributes<T> {
-    // ... additional properties
-  }
-
-  // Example for <label> element
-  interface LabelHTMLAttributes<T> extends HTMLAttributes<T> {
-    htmlFor?: string;
-  }
-
-  // Example for <input> element
-  interface InputHTMLAttributes<T> extends HTMLAttributes<T> {
-    type?: string;
-    value?: string | number | readonly string[];
-    // ... more attributes
-  }
-}
-```
-
-## JSX类型
-在 React 中，有对常见的 HTML 元素（如 div、span 等）进行类型定义，并放在 React 的类型定义文件中。例如：
-```ts
-// 代码1
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      div: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
-      span: React.DetailedHTMLProps<React.HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>;
-      // 其他元素的定义...
-    }
-  }
-}
-```
-“代码1”是*TypeScript*中的一种声明，用于扩展全局的 JSX 命名空间，以便在 React 项目中使用自定义的JSX元素类型。`declare global` 用于扩展全局命名空间。如果你不使用`declare global`，那么你定义的接口或类型将只在当前模块内可见，而不是全局可见。
-
-## React工厂函数类型
-```ts
-// 代码2
-declare namespace React {
-  interface ReactHTML {
-    div: DetailedHTMLFactory<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
-    span: DetailedHTMLFactory<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>;
-    // 其他元素...
-  }
-}
-```
-“代码2”也是 React 定义文件中的代码，用于描述 React 提供的工厂函数。主要用于 React.createElement 和 React.DOM 相关的 API。以下是一些具体的用途：
-
-# 1、React.createElement：
-React.createElement 是 React 创建元素的核心函数之一。ReactHTML 定义了特定 HTML 元素的工厂函数，这些工厂函数用于创建具体的 HTML 元素。
-```js
-React.createElement('div', { className: 'my-class' }, 'Hello, World!');
-```
-在这个例子中，React.createElement 使用了 ReactHTML.div 的定义来进行类型检查。
-
-# 2、React.DOM：
-在早期版本的 React 中（React 16 之前），React.DOM 提供了一组工厂函数，用于创建 HTML 元素。ReactHTML 定义了这些工厂函数的类型。
-```js
-React.DOM.div({ className: 'my-class' }, 'Hello, World!');
-```
-虽然这种用法在现代 React 中已经不常见，但 ReactHTML 的定义仍然存在于类型定义中，以确保兼容性。
-
-## 总结
-React 在其类型定义中重新定义了一些属性和事件处理程序，以便更好地支持JSX语法和组件化开发。主要的区别包括：
-1. 使用className代替class，使用htmlFor代替for，以避免与JavaScript保留字冲突。
-2. 事件处理程序采用驼峰命名法，并且使用合成事件对象。
-3. 引入特殊属性如key和ref，用于优化和控制组件的行为。
-
-
-todo。。。。
-react扩展了html哪些属性定义和功能？
-declare global？
-namespace JSX？
-div: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>？
-等等，都说明一下。。。
-
+你可能疑惑了，我虽然定义了JSX命名空间，但是我并没有在`App.jsx`文件中引入该命名空间。为什么它会使用JSX的类型来理解和检查我的JSX元素类型。原因是，当你使用 JSX 语法时（JSX语法只能在`.jsx` 文件中使用），TypeScript 会隐式地使用 JSX 命名空间的接口来进行类型检查。当 TypeScript 看到 <div> 和 <span> 时，它会查找 JSX.IntrinsicElements 接口，确定这些元素的类型和属性。
 
 ### 三、自定义函数类型
-所以，我们在使用 HTML 元素时，就会对类型进行判断。对于自定义的组件，我们为其添加预定义类型，这样使用的时候就可以直接判断类型是否存在，并给出提示。
+通过预定义，我们在使用 HTML 元素时，会自动对类型进行检查，或者用这些类型来给我们自定义的对象添加类型。但是对于自定义的组件，就没有预定义了。所以，我们需要为其添加类型定义，这样使用的时候就可以直接判断类型是否存在，并给出提示。
 ```ts
 import React from 'react';
 
@@ -458,6 +316,102 @@ const MyButton: React.FC<MyButtonProps> = ({ label, onClick }) => {
 export default MyButton;
 ```
 
-### 泛型
-泛型与预定义有一点不一样，它并不是具体的类型，而是一种用于定义类型的模板或模式，它提供一种灵活和可重用的类型定义方式。
+### 四、泛型
+上面预定义中，有泛型，如下：
+```ts
+interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
+  className?: string | undefined;
+  dir?: string | undefined;
+  placeholder?: string | undefined;
+  //...
+}
+```
+然后，div对象的定义如下：
+```tsx
+div: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+```
+首先，`React.DetailedHTMLProps` 是一个泛型类型，用于描述详细的 HTML 属性。它接受两个类型参数：
+1. 第一个参数：描述元素的通用属性。
+2. 第二个参数：描述具体的 HTML 元素。
 
+(1) `React.HTMLAttributes<HTMLDivElement>`是一个泛型接口，用于描述 HTML 元素的通用属性。T 是具体的 HTML 元素类型。在这段代码中，T 是 HTMLDivElement，表示具体的 div 元素。React.HTMLAttributes<HTMLDivElement> 包含了所有适用于 div 元素的标准 HTML 属性，例如 className, id, style, onClick 等。
+
+(2) `HTMLDivElement`是一个内置的 TypeScript 接口，表示 DOM 中的 <div> 元素。它继承自 HTMLElement，包含了所有 div 元素特有的属性和方法。
+
+(3) React.DetailedHTMLProps 还包含了 `ClassAttributes<T>`，它是 React 特有的一些属性，如 ref。`ClassAttributes<T>` 是一个泛型类型，用于描述类组件的属性。
+
+举个例子，下面代码的div属性，className, id, style, onClick 等属性来自 `React.HTMLAttributes<HTMLDivElement>`，ref 属性来自 `ClassAttributes<HTMLDivElement>`；divRef 是一个 `HTMLDivElement` 类型的引用。
+
+```tsx
+import React, { useRef } from 'react';
+
+const MyComponent: React.FC = () => {
+  const divRef = useRef<HTMLDivElement>(null);
+
+  return (
+    <div
+      className="my-class"
+      id="my-id"
+      style={{ color: 'red' }}
+      onClick={() => alert('Div clicked!')}
+      ref={divRef} // React 特有的属性
+    >
+      Hello, World!
+    </div>
+  );
+};
+
+export default MyComponent;
+```
+
+这里我提出一个疑问，为什么使用`HTMLAttributes<T>`泛型来提供className, id, style, onClick 等属性的类型定义，而不是使用某个具体的类型，比如使用叫HTMLBase的类型。发出这个疑问主要是因为上述代码中没有用到“T”，因为“T”就是用来做区分的，目的是不同的“T”返回的类型不一样。所以泛型的价值没有体现出来。比如：
+```ts
+// 定义一个泛型函数
+function identity<T>(arg: T): T {
+    return arg;
+}
+
+// 使用泛型函数
+const num = identity<number>(42); // num 的类型是 number
+const str = identity<string>("Hello, Generics!"); // str 的类型是 string
+const bool = identity<boolean>(true); // bool 的类型是 boolean
+```
+
+我们再追溯下`HTMLAttributes<T>`的代码
+```ts
+interface FocusEvent<Target = Element, RelatedTarget = Element> extends SyntheticEvent<Target, NativeFocusEvent> {
+    relatedTarget: (EventTarget & RelatedTarget) | null;
+    target: EventTarget & Target;
+}
+
+type EventHandler<E extends SyntheticEvent<any>> = { bivarianceHack(event: E): void }["bivarianceHack"];
+
+type FocusEventHandler<T = Element> = EventHandler<FocusEvent<T>>;
+
+// DOMAttributes
+interface DOMAttributes<T> {
+  children?: ReactNode | undefined;
+  dangerouslySetInnerHTML?: {
+      __html: string;
+  } | undefined;
+
+  // Focus Events
+  onFocus?: FocusEventHandler<T> | undefined;
+  onFocusCapture?: FocusEventHandler<T> | undefined;
+  onBlur?: FocusEventHandler<T> | undefined;
+  onBlurCapture?: FocusEventHandler<T> | undefined;
+  // Touch Events
+  onTouchCancel?: TouchEventHandler<T> | undefined;
+  onTouchCancelCapture?: TouchEventHandler<T> | undefined;
+  onTouchEnd?: TouchEventHandler<T> | undefined;
+  // ...
+}
+
+interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
+  className?: string | undefined;
+  dir?: string | undefined;
+  placeholder?: string | undefined;
+  //...
+}
+```
+所以，一方面，这个泛型类型变量“T”可以一直往上传递，最终某个父接口会用它来为不同的类型变量“T”提供不同的接口类型。比如`HTMLAttributes<T>`的父接口`FocusEvent`就用到了该泛型变量“T”作为`target`和`relatedTarget`的类型的一部分了。你想，如果你不使用泛型，`FocusEvent`接口你该怎么写。如何针对不同的变量如`HTMLDivElement、HTMLButtonElement`去提供不同的类型。不用泛型，那从`FocusEvent =》FocusEventHandler<T> =》DOMAttributes<T>`至上往下的类型都要重写，而且是针对不同的元素 div、button，写法上都有区别。整个继承下来最终你会发现，`HTMLAttributes<HTMLDivElement>`和`HTMLAttributes<HTMLButtonElement>`的许多属性都存在差异。这就是使用泛型的作用。
