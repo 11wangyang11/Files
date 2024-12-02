@@ -415,3 +415,10 @@ interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
 }
 ```
 所以，一方面，这个泛型类型变量“T”可以一直往上传递，最终某个父接口会用它来为不同的类型变量“T”提供不同的接口类型。比如`HTMLAttributes<T>`的父接口`FocusEvent`就用到了该泛型变量“T”作为`target`和`relatedTarget`的类型的一部分了。你想，如果你不使用泛型，`FocusEvent`接口你该怎么写。如何针对不同的变量如`HTMLDivElement、HTMLButtonElement`去提供不同的类型。不用泛型，那从`FocusEvent =》FocusEventHandler<T> =》DOMAttributes<T>`至上往下的类型都要重写，而且是针对不同的元素 div、button，写法上都有区别。整个继承下来最终你会发现，`HTMLAttributes<HTMLDivElement>`和`HTMLAttributes<HTMLButtonElement>`的许多属性都存在差异。这就是使用泛型的作用。
+
+话又说回来了，这种庞大的React库，对元素的定义使用用泛型确实非常有必要，毕竟整个HTML元素体现庞大且属性众多。但是我们日常开发组件很少用到，毕竟我们开发的组件单一，用不到这么复杂的复用逻辑，我认为我们日常开发中用到的也就类似下面这种，呵呵。
+```tsx
+function identity<T>(arg: T): T {
+    return arg;
+}
+```
