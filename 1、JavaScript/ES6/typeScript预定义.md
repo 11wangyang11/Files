@@ -198,8 +198,8 @@ function MyComponent() {
 export default MyComponent;
 ```
 
-## 2、React类型定义
-上面比较了`className`和`class`，仅仅是解释了在 React 中为什么HTML元素都使用`className`，而不是`class`作为类名的原因。这里开始介绍React类型定义。因为使用React框架，用的都是React框架提供的类型定义。
+## 2、React预定义
+上面比较了`className`和`class`，仅仅是解释了在 React 中为什么HTML元素都使用`className`，而不是`class`作为类名的原因。这里开始介绍React类型定义。React针对JSX语法也提供了系统的预定义。
 
 首先，我在React库的global库的global.d.ts文件中看到如下类型定义：
 ```ts
@@ -220,6 +220,9 @@ interface HTMLLinkElement extends HTMLElement { }
 代码示例：
 ```ts
 // react的index.d.ts文件
+export = React;
+export as namespace React;
+
 declare namespace React {
   // 许多元素类型都继承HTMLAttributes<T>
   interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
@@ -260,23 +263,17 @@ declare global {
             // HTML
             button: React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>;
             div: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
-            dl: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDListElement>, HTMLDListElement>;
-            dt: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
-            form: React.DetailedHTMLProps<React.FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>;
             h1: React.DetailedHTMLProps<React.HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
             h2: React.DetailedHTMLProps<React.HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
-            hr: React.DetailedHTMLProps<React.HTMLAttributes<HTMLHRElement>, HTMLHRElement>;
-            html: React.DetailedHTMLProps<React.HtmlHTMLAttributes<HTMLHtmlElement>, HTMLHtmlElement>;
             i: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
-            iframe: React.DetailedHTMLProps<React.IframeHTMLAttributes<HTMLIFrameElement>, HTMLIFrameElement>;
+            small: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
+            strong: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
             img: React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>;
             input: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
             link: React.DetailedHTMLProps<React.LinkHTMLAttributes<HTMLLinkElement>, HTMLLinkElement>;
             script: React.DetailedHTMLProps<React.ScriptHTMLAttributes<HTMLScriptElement>, HTMLScriptElement>;
             section: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
-            small: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
-            span: React.DetailedHTMLProps<React.HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>;
-            strong: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
+            
             style: React.DetailedHTMLProps<React.StyleHTMLAttributes<HTMLStyleElement>, HTMLStyleElement>;
 
             // SVG
@@ -288,16 +285,29 @@ declare global {
     }
 }
 ```
+React的`index.d.ts`文件中，一方面提供了命名空间React，用于模块化的方式导入和使用 React。外部可以通过`React.ReactHTML`的方式使用该类型。当然如果某接口使用`export`导出，还可以直接引入接口。另一方面，全局声明中提供了命名空间JSX的接口。将 JSX 命名空间定义在全局作用域中，确保 TypeScript 编译器在处理任何包含 JSX 语法的文件时，都能正确地理解和检查这些 JSX 元素的类型。比如如下代码：
+```tsx
+// App.tsx
+const App = () => {
+  return (
+    <div>
+      <span>Hello, World!</span>
+    </div>
+  );
+};
+export default App;
+```
 
+你可能疑惑了，我虽然定义了JSX命名空间，但是我并没有在`App.jsx`文件中引入该命名空间。为什么它会使用JSX的类型来理解和检查我的JSX元素类型。原因是，当你使用 JSX 语法时（JSX语法只能在`.jsx` 文件中使用），TypeScript 会隐式地使用 JSX 命名空间的接口来进行类型检查。
 
-2. 事件处理程序
+## 3、事件处理程序
 React在事件处理程序方面进行了扩展，以便更好地支持合成事件（Synthetic Events）。React的事件处理程序属性名采用驼峰命名法，并且事件处理程序接收的参数是合成事件对象，而不是原生事件对象。
 
-原生HTML:
+**原生HTML:**
 ```html
 <button onclick="handleClick(event)">Click me</button>
 ```
-React:
+**React:**
 ```jsx
 <button onClick={handleClick}>Click me</button>
 ```
