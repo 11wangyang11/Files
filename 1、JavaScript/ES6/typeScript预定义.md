@@ -211,6 +211,7 @@ interface MouseEvent extends Event { }
 interface Element { }
 interface HTMLElement extends Element { }
 interface HTMLButtonElement extends HTMLElement { }
+interface HTMLLinkElement extends HTMLElement { }
 // ...
 ```
 为什么React库中要定义一下这些类型？这些都是Typescript库中已有的定义啊。应该是为了后面方便扩展用的吧！
@@ -218,8 +219,73 @@ interface HTMLButtonElement extends HTMLElement { }
 其次，React还针对div等元素进行类型扩展，来确保在使用JSX时能够正确地推断出元素的类型和属性。比如新增className、onClick等。
 代码示例：
 ```ts
+// react的index.d.ts文件
 declare namespace React {
+  // 许多元素类型都继承HTMLAttributes<T>
+  interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
+    className?: string | undefined;
+    dir?: string | undefined;
+    placeholder?: string | undefined;
+    //...
+  }
+
+  interface ButtonHTMLAttributes<T> extends HTMLAttributes<T> {
+    disabled?: boolean | undefined;
+    form?: string | undefined;
+    type?: 'submit' | 'reset' | 'button' | undefined;
+    // ...
+  }
+
+  interface LinkHTMLAttributes<T> extends HTMLAttributes<T> {
+    href?: string | undefined;
+    imageSizes?: string | undefined;
+    rel?: string | undefined;
+    sizes?: string | undefined;
+    type?: string | undefined;
+    // ...
+  }
   
+  // React.DOM
+  interface ReactHTML {
+    button: DetailedHTMLFactory<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>;
+    div: DetailedHTMLFactory<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+    link: DetailedHTMLFactory<LinkHTMLAttributes<HTMLLinkElement>, HTMLLinkElement>;
+    // ...
+  }
+}
+
+declare global {
+    namespace JSX {
+        interface IntrinsicElements {
+            // HTML
+            button: React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>;
+            div: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+            dl: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDListElement>, HTMLDListElement>;
+            dt: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
+            form: React.DetailedHTMLProps<React.FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>;
+            h1: React.DetailedHTMLProps<React.HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
+            h2: React.DetailedHTMLProps<React.HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
+            hr: React.DetailedHTMLProps<React.HTMLAttributes<HTMLHRElement>, HTMLHRElement>;
+            html: React.DetailedHTMLProps<React.HtmlHTMLAttributes<HTMLHtmlElement>, HTMLHtmlElement>;
+            i: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
+            iframe: React.DetailedHTMLProps<React.IframeHTMLAttributes<HTMLIFrameElement>, HTMLIFrameElement>;
+            img: React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>;
+            input: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+            link: React.DetailedHTMLProps<React.LinkHTMLAttributes<HTMLLinkElement>, HTMLLinkElement>;
+            script: React.DetailedHTMLProps<React.ScriptHTMLAttributes<HTMLScriptElement>, HTMLScriptElement>;
+            section: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
+            small: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
+            span: React.DetailedHTMLProps<React.HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>;
+            strong: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
+            style: React.DetailedHTMLProps<React.StyleHTMLAttributes<HTMLStyleElement>, HTMLStyleElement>;
+
+            // SVG
+            svg: React.SVGProps<SVGSVGElement>;
+            circle: React.SVGProps<SVGCircleElement>;
+            ellipse: React.SVGProps<SVGEllipseElement>;
+            view: React.SVGProps<SVGViewElement>;
+        }
+    }
 }
 ```
 
