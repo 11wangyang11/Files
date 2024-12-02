@@ -797,10 +797,11 @@ readAndWriteFiles();
 ```
 `async/await` 使异步代码看起来像同步代码，极大地提高了代码的可读性和可维护性。并且使用 `try/catch` 语句来处理错误，直观和简洁。“回调函数”如果嵌套过多会导致代码难以阅读和维护，这种现象被称为“回调地狱”，。不过`async/await`需要 ES2017 支持，所以 nodejs 中版本要注意使用新版或者编译器要包含必要的库，如下：
 ```js
+// tsconfig.json文件
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es6",
+    "target": "es6", // javascript版本
+    "module": "commonjs", // 模块系统
     "lib": ["ES2021"], // 要包含ES2021库
     "outDir": "./dist",
     "rootDir": "./src",
@@ -814,7 +815,10 @@ readAndWriteFiles();
 }
 ```
 
-当然，即使项目中版本低于ES2017，也可以使用编译器如 Babel 进行转化...
+当然，即使项目中版本低于ES2017，也可以使用编译器如 Babel 进行转化，具体见tsconfig和babel等工具。
+
+**2、module**
+
 
 ### 五、参考文献
 1. [nodejs单线程？非阻塞I/O？异步?](https://blog.csdn.net/weixin_45277161/article/details/117331334)

@@ -213,9 +213,15 @@ interface HTMLElement extends Element { }
 interface HTMLButtonElement extends HTMLElement { }
 // ...
 ```
-为什么React库中要定义一下这些类型？这些不是HTML的的元素、事件类型吗？应该是为了后面方便扩展用的吧！
+为什么React库中要定义一下这些类型？这些都是Typescript库中已有的定义啊。应该是为了后面方便扩展用的吧！
 
-然后，。。。。。
+其次，React还针对div等元素进行类型扩展，来确保在使用JSX时能够正确地推断出元素的类型和属性。比如新增className、onClick等。
+代码示例：
+```ts
+declare namespace React {
+  
+}
+```
 
 
 2. 事件处理程序
