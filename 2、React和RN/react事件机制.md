@@ -110,7 +110,9 @@ $(document).ready(function() {
 </script>
 ```
 
-**你是否有一个疑惑，如下代码，我们既没有手动添加监听，也没有使用内联事件处理器等，仅仅用了JSX方式处理onClick方法，为什么父组件还会受到子组件冒泡事件的影响，触发handleClose呢？**
+### 二、react事件机制
+
+你是否有一个疑惑，如下代码，我们既没有手动添加监听，也没有使用内联事件处理器等，仅仅用了JSX方式处理onClick方法，为什么父组件还会受到子组件冒泡事件的影响，触发handleClose呢？
 ```js
 const handleClose = (event: MouseEvent<HTMLDivElement>) => {
   if (event.target === event.currentTarget) {
@@ -127,7 +129,6 @@ const handleSubClose = (event: MouseEvent<HTMLDivElement>) => {
 ```
 这是因为 `react` 在幕后为你处理了事件监听的注册和管理。具体来说，`react` 会在组件挂载时为你注册事件监听器，并在事件触发时调用你定义的处理器。上面代码，`react` 会在底层为这个div注册一个点击事件监听器，并在点击事件发生时调用`handleClose`函数。下面详细介绍一下`react`事件机制。  
 
-### 二、react事件机制
 `react`的事件处理机制与传统的 DOM 事件处理有所不同。它使用了一种称为“合成事件”（Synthetic Events）的系统，这种系统在性能和跨浏览器兼容性方面提供了许多优势。
 
 ## 1、JSX中的事件处理器
@@ -170,7 +171,7 @@ react使用“合成事件系统”来处理事件，这些合成事件是react�
 6. cancelable: 事件是否可以取消。
 7. defaultPrevented: 是否调用了 preventDefault() 方法。
 8. isTrusted: 事件是否是用户触发的。
-9. nativeEvent: 原生事件
+9. nativeEvent: **原生事件**
 
 **鼠标事件特有的属性：**
 
@@ -224,28 +225,19 @@ export default MyComponent;
 
 **从这里，也可以看出合成事件对不同浏览器、不同事件做的兼容处理，对开发者提供一套简单且一致的事件体系。**
 
-# (3) 原生事件与合成事件常见的区别
+## 3、 原生事件与合成事件常见的区别
 (参考文献1)  
 
-1. 原生事件命名为纯小写（onclick, onblur），而 `react` 事件命名采用小驼峰式，如 `onClick` 等；
-```js
-// 原生事件绑定方式
-<button onclick="handleClick()">按钮</button>
-      
-// react 合成事件绑定方式
-const button = <button onClick={handleClick}>按钮</button>
-```
-2. 原生事件使用内联事件处理函数写法，而合成事件使用 JSX 事件处理函数写法；
-```js
-// 原生事件 内联事件处理函数
-<button onclick="handleClick()">按钮</button>
-      
-// react JSX事件处理函数写法
-const button = <button onClick={handleClick}>按钮</button>
-```
-3. 阻止默认行为方式不同
-在原生事件中，可以通过返回 false 方式来阻止默认行为，但是在 React 中，需要显式使用 preventDefault() 方法来阻止。
-这里以阻止 <a> 标签默认打开新页面为例，介绍两种事件区别：
+1. 事件绑定
+DOM原生事件通过addEventListener或者直接在HTML元素上绑定事件处理函数，而react事件则是通过JSX中onClick、onChange等属性上直接绑定事件处理函数。
+2. 事件监听
+（1）DOM默认事件监听器只绑定在目标元素上；也可以手动进行事件委托，在其父组件上也绑定事件监听器。  
+
+（2）react事件是统一绑定在根元素上的。react项目中对同一个事件进行多次监听，也只会在根节点上触发一次注册。因为react最终注册在根节点上的不是某一个DOM节点上对应的具体回调逻辑，而是一个统一的事件分发函数。事件分发过程会在Fiber树上来收集事件捕获和冒泡阶段涉及到的所有回调函数和节点实例，放入数组中。如下图所示：
+![react事件工作流](../images/react事件工作流.jpg)
+
+3. 阻止默认行为
+在原生事件中，可以通过返回 false 方式来阻止默认行为，但是在 React 中，需要显式使用 preventDefault() 方法来阻止。这里以阻止 <a> 标签默认打开新页面为例，介绍两种事件区别：
 ```js
 // 原生事件阻止默认行为方式
 <a href="https://www.123.com" 
@@ -264,7 +256,11 @@ const clickElement = <a href="https://www.123.com" onClick={handleClick}>
 </a>
 ``` 
 
+4. 事件监听器优先级
+不难理解，react事件监听器的触发顺序晚于DOM原生事件的，因为react事件是通过根容器的捕获/冒泡阶段触发的。
+
 ### 三、事件执行顺序&阻止事件传播
+
 想要阻止事件传播，首先要了解事件执行的顺序，前面已经介绍了原生事件和合成事件的传播和监听逻辑了，下面举例说明一下。
 
 ## 1、事件执行顺序
