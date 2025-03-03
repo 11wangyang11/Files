@@ -66,7 +66,7 @@
     }
 }
 ```
-这里，th, td嵌套在.common-od-table内，如果是css文件是不支持的。但是在scss中，嵌套有作用，可以约束选择器的作用范围。编译后的css为：
+这里，th, td嵌套在.common-od-table内，如果是css文件是不支持的。但是在scss中，**嵌套有作用**，可以约束选择器的作用范围。编译后的css为：
 ```css
 .common-od-table {
   overflow: hidden;
@@ -191,7 +191,22 @@ aside {
   border-width: 3px;
 }
 ```
-在上边的代码中，`.seriousError`将会继承`.error`定义的所有样式。以`class="seriousError"` 修饰的html元素最终的展示效果就好像是`class="seriousError error"`。
+在上边的代码中，`.seriousError`将会继承`.error`定义的所有样式。以`class="seriousError"` 修饰的html元素最终的展示效果就好像是`class="seriousError error"`。**@extend 通常会结合 %（占位符选择器）一起使用**，如下所示：
+```scss
+%error {
+  border: 1px solid red;
+  background-color: #fdd;
+}
+.normalError {
+  @extend %error;
+  border-width: 1px;
+}
+.seriousError {
+  @extend %error;
+  border-width: 3px;
+}
+```
+%error 是一个 占位符选择器（Placeholder Selector），它本身不会生成 CSS，只有在被 @extend 引用时才会生效。并且，如果 %flexColumn 被多个选择器继承，Sass 会将这些选择器合并，生成更简洁的 CSS。
 
 # 5、计算
 标准CSS的calc()函数允许在属性值中进行基本的加、减、乘、除运算。以下是一些示例：
