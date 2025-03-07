@@ -173,10 +173,38 @@ const Item = ({ id, name }) => {
 ```
 只有 key="C" 的元素会触发创建，其他元素保持复用。
 
-另外，。。。。，状态混乱问题。。。。。。todo....
+另外，如果列表项是带有内部状态（如输入框、勾选框）的组件，缺少 key 可能导致状态错乱。如下所示：
+```jsx
+const initialTodos = [
+  { id: 1, text: "Learn JavaScript" },
+  { id: 2, text: "Learn React" },
+  { id: 3, text: "Learn CSS" },
+];
 
+// 渲染列表（未加 key）
+function LearnList() {
+  const [tolearns, setToLearns] = useState(initialTodos);
 
-所以，总的来说，**key的核心作用有亮点：一是高效复用，针对插入、删除场景非常有用；二是避免状态混乱，针对。。。。**。
+  const deleteLearn = (index) => {
+    const newTolearns = tolearns.filter((_, i) => i !== index);
+    setToLearns(newTolearns);
+  };
+
+  return (
+    <div>
+      {tolearns.map((tolearn, index) => (
+        <div>
+          <input type="text" defaultValue={tolearn.text} />
+          <button onClick={() => deleteLearn(index)}>Delete</button>
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+用户点击修改了索引1的输入框(如："Learn nothing")，然后再点击删除索引1。此时会发现，剩下的两个展示内容是原本的索引0和索引1，好像删除的是索引2。其实，当删除索引1重新渲染时，索引2到了索引1的位置，react会复用之前的索引1组件，react只对数据进行了更改，指向了索引2的数据。所以react数据其实是正确的"Learn CSS"。但是展示的内容确是"Learn nothing"，因为此时的input是非受控组件，其值由DOM管理，不会及时更改，导致展示上的异样。这个问题本质上是非受控组件造成的，但是加key可以解决这个问题。加了key之后，第二次渲染不仅由于前后索引1位置的key不一致，不会复用之前索引1的组件，同时索引2没有发生改变，所以，实际上会直接复用原本的索引2组件，还优化了性能。
+
+所以，总的来说，**key的核心作用有两点：针对列表的插入、删除等，一是高效复用；二是避免状态混乱，主要针对非受控组件场景。**
 
 ## 三、总结
 # 1、Diff算法是同层对比；
