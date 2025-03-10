@@ -403,7 +403,59 @@ PageManager.init();
 
 ## 11、react类组件中的this
 ## 回答：
-在React类组件中，我们会直接使用`this`，比如：
+# JavaScript的this指向
+第一，首先，我们介绍一下JS中的this。我们知道，JS普通函数里的this由调用放决定。箭头函数里的this则会继承外层的this特性。
+
+# React的this指向
+React本身就是一个JS库，准守JS的this机制。在React类组件中，我们会在render中使用this、在函数中使用this、在constructor中使用this，这些this都指向哪里呢？如下所示：
+```js
+class MyComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    // this.handleClick = this.handleClick.bind(this); // 绑定 this
+  }
+
+  handleClick() {
+    console.log(this);
+  }
+
+  render() {
+    return <button onClick={this.handleClick}>点击</button>;
+  }
+}
+```
+**一，首先，在react类组件中，构造函数中的this是绑定到组件实例上的，在react使用new调用类的构造函数时创建组件实例时绑定；**
+**二，其次，render方法是组件实例调用的，所以render中的this也指向组件实例。react所有生命周期方法（如componentDidMount、render）均由react主动调用，并明确其上下文为组件实例。**
+```js
+// React 内部伪代码
+class Component {
+  // 生命周期方法调用
+  componentDidMount() {
+    this.instance.componentDidMount(); // 通过实例调用
+  }
+
+  // render 方法调用
+  render() {
+    return this.instance.render(); // 通过实例调用
+  }
+}
+```
+**第三，事件处理函数本质上是由开发者自定义的回调，react无法预知其使用场景，不自动绑定this。不自动绑定this保留了灵活性，由开发者根据需要选择绑定对象。**。
+该类组件从渲染到调用handleClick方法，react底层大致做了如下步骤(模拟行为)：
+```js
+// 1. 构造函数
+const comp = new MyComponent(); // 创建类组建实例(此时，构造函数的this指向组件实例)
+
+// 2. 渲染
+comp.render(); // 渲染过程，render()是类组件的一个实例方法，所以调用者其实就是组件实例本身，所以onClick={this.handleClick}这里的this指向组件实例
+
+// 3. 调用
+const callback = this.handleClick; // this.handleClick 是从实例中提取的原型方法
+button.addEventListener('click', callback); // 直接传递函数引用
+// 普通函数调用方式，而非方法调用。函数调用时没有上下文，导致严格模式下为underfined，非严格模式下指向window。
+```
+
+我们举个例子，观察验证一下：
 ```jsx
 import React, { Component } from 'react';
 
@@ -411,17 +463,21 @@ class MyComponent ectends Component {
     constructor(props) {
         super(props);
         this.state = { count: 0};
+        // 注意，bind是绑定this，call/apply会直接执行方法
         this.handleClick3 = this.handleClick3.bind(this); // 手动绑定`this`
     }
 
+    // 普通函数，未绑定this
     handleClick() {
         this.setState({ count: this.state.count + 1});
     }
 
+    // 箭头函数
     handleClick2 = () => {
         this.setState({ count: this.state.count + 2});
     }
 
+    // bind绑定this
     handleClick3() {
         this.setState({ count: this.state.count + 3});
     }
