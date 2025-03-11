@@ -13,12 +13,11 @@ css多种样式写法，以及各自的优缺点，比如：
 第一，如果按钮是复杂的样式（必须使用View组件），那确实没什么好的方法；
 第二，如果按钮就是一个文本，或者本身就是一个文本但是视觉希望这个文本是永远绑定在一起的，那其实有一个解决方法，就是使用**连字符(\u2060)**，比如：
 ```jsx
-// 我们希望roomNights是完整的不会从中间断开，做法：newRoomNight = roomNights?.split('').join('\u2060');每个字符都连起来
+// 我们希望roomNights是完整的不会从中间断开，做法：newRoomNight = roomNights?.split('').join('\u2060');每个字符都连起来。当然，如果roomNights本身就超过一行了，那连字符也没有，还是会换行。
 <Text>
     <Text>{roomName}</HText>
     <HText>{roomNights}</HText>
 </Text>
 ```
-
 
 ## 二、
