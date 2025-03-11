@@ -404,7 +404,7 @@ PageManager.init();
 ## 11、react类组件中的this
 ## 回答：
 # JavaScript的this指向
-第一，首先，我们介绍一下JS中的this。我们知道，JS普通函数里的this由调用放决定。箭头函数里的this则会继承外层的this特性。
+第一，首先，我们介绍一下JS中的this。我们知道，JS普通函数里的this由调用放决定。箭头函数里的this则会继承外层的this特性。其次，JS的事件处理函数内部的this会默认绑定到DOM元素（注意，是DOM元素，不是类实例）。
 
 # React的this指向
 React本身就是一个JS库，准守JS的this机制。在React类组件中，我们会在render中使用this、在函数中使用this、在constructor中使用this，这些this都指向哪里呢？如下所示：
@@ -440,7 +440,7 @@ class Component {
   }
 }
 ```
-**第三，事件处理函数本质上是由开发者自定义的回调，react无法预知其使用场景，不自动绑定this。不自动绑定this保留了灵活性，由开发者根据需要选择绑定对象。**。
+**第三，react使用合成事件，事件处理函数不自动绑定this，也不会默认绑定到react元素上。不自动绑定this保留了灵活性，由开发者根据需要选择绑定对象。**。
 该类组件从渲染到调用handleClick方法，react底层大致做了如下步骤(模拟行为)：
 ```js
 // 1. 构造函数
