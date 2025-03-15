@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>debounce</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+</head>
+<body>
+    <input type="text" id="input" /> 
+    <script type="text/javascript">
+        var oInput = document.getElementById('input');
+        oInput.onkeyup = debounce(check, 1000, true);
+        
+        // 事件回调
+        function check() {
+            var val = this.value;
+            if (val.length < 6) {
+                console.log('Invalid Length');
+            } else {
+                console.log('Success');
+            }
+        }
+
+        // 防抖函数
+        function debounce(fn, delay, immediate) {
+            var t = null;
+            return function() {
+                var _self = this,
+                    args = arguments;
+
+                clearTimeout(t); // 这里清除定时器，并不会清除t这个引用的值
+                if (immediate) {
+                    var exec = !t;
+                    t = setTimeout(function() {
+                        t = null;
+                    }, delay);
+                    if(exec) {
+                        fn.apply(_self, args);
+                    }
+                } else {
+                    t = setTimeout(function() {
+                        fn.apply(_self, args);
+                    }, delay);
+                }
+            }
+        }
+
+    </script>
+</body>
+</html>

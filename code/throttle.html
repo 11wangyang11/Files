@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>throttle</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+</head>
+<body>
+    <input type="text" id="input" /> 
+    <script type="text/javascript">
+        var oInput = document.getElementById('input');
+        oInput.onkeyup = throttle(check, 1000);
+        
+        // 事件回调
+        function check() {
+            var val = this.value;
+            if (val.length < 6) {
+                console.log('Invalid Length');
+            } else {
+                console.log('Success');
+            }
+        }
+
+        // 节流函数
+        function throttle(fn, delay) {
+            var t = null;
+            var begin = new Date().getTime();
+            return function() {
+                var _self = this,
+                args = arguments,
+                cur = new Date().getTime();
+
+                clearTimeout(t);
+                if (cur - begin >=delay) {
+                    fn.apply(_self, args);
+                    begin = cur;
+                } else {
+                    // 最新一次的事件操作
+                    t = setTimeout(function(){
+                        fn.apply(_self, args);
+                    }, delay);
+                }
+            }
+        }
+        /**
+         * 1. 如果当前时间与 begin 的差值超过 delay，立即执行 fn，并更新 begin 为当前时间。
+         * 2. 如果未超过，设置一个新的定时器，在 delay 时间后执行 fn（确保最后一次触发也会被执行）。
+         **/
+    </script>
+</body>
+</html>
