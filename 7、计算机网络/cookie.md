@@ -53,14 +53,20 @@ Set-Cookie: sessionId=abc123; HttpOnly; Secure; SameSite=Strict
 这里以`nodejs`为例，具体介绍一下`http`请求中，如何使用“Cookie”。首先，Cookie的设置和使用涉及到服务器和客户端之间的交互，具体过程如下：
 
 ## 1、设置Cookie
-# 服务器通过响应设置Cookie：
-- 服务器在HTTP响应头中使用Set-Cookie字段来设置Cookie。
-- 浏览器接收到响应后，会根据Set-Cookie字段的内容在客户端存储Cookie。
+**触发条件**：当用户首次访问网站或执行特定操作（如登录）时，服务器需要记录用户状态。Cookie是**服务器主动发送给浏览器**的，目的是让浏览器存储一段用于标识用户或记录状态的数据。
+**操作流程**：
+1. 服务器生成Cookie：服务器根据业务逻辑生成一个唯一的标识符（如 sessionId=abc123）；
+2. 服务器发送Cookie：服务器在HTTP响应头中使用Set-Cookie字段来设置Cookie；
+3. 浏览器存储Cookie：浏览器接收到响应后，会根据Set-Cookie字段的内容在客户端存储Cookie。
 
 ## 2、使用Cookie
-# 客户端在请求中发送Cookie：
-- 浏览器在发送后续请求时，会自动将与请求URL匹配的Cookie添加到HTTP请求头中。
-- 服务器可以从请求头中读取这些Cookie，以便进行相应的处理。
+**触发条件**：用户后续访问同一网站时，浏览器需要告知服务器用户身份。Cookie是**浏览器自动发送给服务器**的，目的是让服务器识别用户身份或恢复会话状态。
+**操作流程**：
+1. 浏览器检查Cookie：根据访问的 URL（如 https://example.com/profile），浏览器查找匹配的 Cookie（域名、路径一致）；
+2. 自动附加Cookie：浏览器将匹配的 Cookie 添加到 HTTP 请求头的 Cookie 字段中；
+3. 服务器读取 Cookie：服务器解析请求头中的 Cookie，识别用户身份（如根据 sessionId=abc123 查询用户数据）。
+
+其次，这里额外提一点。在 Web 开发中，前端也是可以通过 JavaScript 直接调用 document.cookie 来设置 Cookie，但是仅针对当前域名下的Cookie，且无法设置 HttpOnly。后面，我们会在web网络安全中详细介绍cookie的安全相关配置。
 
 **示例**
 
