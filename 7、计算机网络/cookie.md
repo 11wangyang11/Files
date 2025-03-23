@@ -66,7 +66,31 @@ Set-Cookie: sessionId=abc123; HttpOnly; Secure; SameSite=Strict
 2. 自动附加Cookie：浏览器将匹配的 Cookie 添加到 HTTP 请求头的 Cookie 字段中；
 3. 服务器读取 Cookie：服务器解析请求头中的 Cookie，识别用户身份（如根据 sessionId=abc123 查询用户数据）。
 
-其次，这里额外提一点。在 Web 开发中，前端也是可以通过 JavaScript 直接调用 document.cookie 来设置 Cookie，但是仅针对当前域名下的Cookie，且无法设置 HttpOnly。后面，我们会在web网络安全中详细介绍cookie的安全相关配置。
+## 3、cookie传输规则
+Cookie 的传输规则由 **域名（Domain）**、**路径（Path）**、**Secure** 和 **SameSite** 属性共同决定。**浏览器仅在满足以下条件时自动发送 Cookie：**
+# (1) 域名匹配
+- 规则：Cookie 的域名（Domain）必须是当前请求域名的 **后缀**（子域名或相同域名），否则是不合法的。
+- 示例：
+Cookie 的 Domain 设为 .example.com：可发送给 example.com 及其所有子域名（如 api.example.com、www.example.com）。
+Cookie 的 Domain 设为 www.example.com：仅发送给 www.example.com，不发送给 api.example.com。
+
+# (2) 路径匹配
+- 规则：当前请求的路径必须是 Cookie 的 Path 或其子路径。
+- 示例：
+Cookie 的 Path 设为 /user：会发送给 /user/profile，但不会发送给 /api。
+Cookie 的 Path 设为 /：对所有路径生效。
+
+# (3) 协议匹配
+- Secure 属性：若 Cookie 标记为 Secure，则仅通过 HTTPS 协议发送。
+- 未标记 Secure 的 Cookie：可通过 HTTP 发送（但现代浏览器逐步限制此行为）。
+
+# (4) 跨站请求限制
+- SameSite 属性：
+- Strict：仅同站请求（相同域名）携带 Cookie。
+- Lax（默认）：允许安全导航（如 <a> 跳转）携带 Cookie，但禁止跨站 POST 请求。
+- None：允许跨站携带 Cookie（需同时设置 Secure，这是现代浏览器强制要求的安全策略）。
+
+从cookie的传输规则可以看出，cookie是有跨站携带的能力的，这就有被网络攻击者获取的可能性（CSRF）。后面，我们会在web网络安全中详细介绍cookie的安全相关配置。
 
 **示例**
 
