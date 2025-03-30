@@ -5,6 +5,16 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + React</title>
+    <style type="text/css">
+      .parent {
+        border: 1px solid black;
+      }
+      .child {
+        float: left;
+        width: 30%;
+        border: 1px solid blue;
+      }
+    </style>
   </head>
   <body>
     <div id="root">
@@ -12,20 +22,9 @@
         <li>Mix flour, baking powder, sugar, and salt.</li>
         <li>In another bowl, mix eggs, milk, and oil.</li>
       </ol>
-      <ul>
-        <li>第一项</li>
-        <li>
-          第二项
-          <!-- 注意，关闭的 </li> 标签没有放置在这里！ -->
-          <ol>
-            <li>第二项第一子项</li>
-            <li>第二项第二子项</li>
-            <li>第二项第三子项</li>
-          </ol>
-          <!-- 关闭的 </li> 标签在这里 -->
-        </li>
-        <li>第三项</li>
-      </ul>      
+      <div class="parent">
+        <div class="child">浮动元素</div>
+      </div>
     </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
