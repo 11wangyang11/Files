@@ -373,8 +373,9 @@ child.name = 'alice';
 child.greet(); // alice
 ```
 
-## 10、为什么我rn代码中可以运行下面代码（简化）：
+## 10、在静态方法中，this 指向类本身？
 ## 回答：
+其实很容易理解，静态方法的调用方是类本身（js中类也是对象），`this`自然指向调用该方法的对象。
 ```ts
 export class PageManager {
     private static pageInstance: Page<IBasePageProps>;
@@ -382,14 +383,15 @@ export class PageManager {
         orderId: 0,
     };
 
-    static init(pageInstance) {
-        this.initUrlQuery(pageInstance);
+    static init(pageInstance: Page<IBasePageProps>) {
+        this.pageInstance = pageInstance; // 保存实例
+        this.initUrlQuery(this.pageInstance.getQuery()); // 假设从实例中提取查询参数
     }
 
     private static initUrlQuery(urlQuery: { [key: string]: string }) {
         const { orderId } = urlQuery || {};
         this.urlQuery = {
-            orderId: Number(orderId),
+            orderId: Number(orderId) || 0,
         };
     }
 
@@ -397,17 +399,18 @@ export class PageManager {
         return this.urlQuery;
     }
 }
-PageManager.init();
+
+const pageInstance = new Page<IBasePageProps>();
+PageManager.init(pageInstance);
 ```
-首先，按照上面this的说法，这里没有通过new创建对象，this岂不是指代不明。而且还可以通过PageManager.getUrlQuery()获取urlQuery。为什么？我明明没有创建这个对象啊。。。。。。。
 
 ## 11、react类组件中的this
 ## 回答：
-# JavaScript的this指向
+# (1) JavaScript的this指向
 第一，首先，我们介绍一下JS中的this。我们知道，JS普通函数里的this由调用放决定。箭头函数里的this则会继承外层的this特性。其次，JS的事件处理函数内部的this会默认绑定到DOM元素（注意，是DOM元素，不是类实例）。
 
-# React的this指向
-React本身就是一个JS库，准守JS的this机制。在React类组件中，我们会在render中使用this、在函数中使用this、在constructor中使用this，这些this都指向哪里呢？如下所示：
+# (2) React的this指向
+React本身就是一个JS库，遵守JS的this机制。在React类组件中，我们会在render中使用this、在函数中使用this、在constructor中使用this，这些this都指向哪里呢？如下所示：
 ```js
 class MyComponent extends React.Component {
   constructor(props) {
@@ -450,7 +453,7 @@ const comp = new MyComponent(); // 创建类组建实例(此时，构造函数�
 comp.render(); // 渲染过程，render()是类组件的一个实例方法，所以调用者其实就是组件实例本身，所以onClick={this.handleClick}这里的this指向组件实例
 
 // 3. 调用
-const callback = this.handleClick; // this.handleClick 是从实例中提取的原型方法
+const callback = this.handleClick; // this.handleClick 是从实例中提取的原型方法，handleClick里的this没有了指向
 button.addEventListener('click', callback); // 直接传递函数引用
 // 普通函数调用方式，而非方法调用。函数调用时没有上下文，导致严格模式下为underfined，非严格模式下指向window。
 ```
@@ -464,10 +467,10 @@ class MyComponent ectends Component {
         super(props);
         this.state = { count: 0};
         // 注意，bind是绑定this，call/apply会直接执行方法
-        this.handleClick3 = this.handleClick3.bind(this); // 手动绑定`this`
+        this.handleClick3 = this.handleClick.bind(this); // 手动绑定`this`
     }
 
-    // 普通函数，未绑定this
+    // bind绑定this
     handleClick() {
         this.setState({ count: this.state.count + 1});
     }
@@ -477,7 +480,7 @@ class MyComponent ectends Component {
         this.setState({ count: this.state.count + 2});
     }
 
-    // bind绑定this
+    // 普通函数，未绑定this
     handleClick3() {
         this.setState({ count: this.state.count + 3});
     }
@@ -506,10 +509,8 @@ class MyComponent ectends Component {
 
 2、`handleClick2`箭头函数是定义在类的属性中的，它会**继承**定义时的外部作用域`this`。这里解释一点，类有两种方法，一种是静态方法，定义在类本身上，`this`指向类本身，与实例无关；另一种是实例方法。箭头属性方法的`this`永远指向类组件实例。在类定义阶段，JavaScript引擎就已经知道箭头函数会在类实例化时的this，它通过词法作用域来进行绑定。路线如下：
 ```
-1. handleClick2，因为是类组件的箭头函数属性，所以会自动绑定到该类组件的实例上。而render中使用this.handleClick2仅仅是点击时的调用。因为handleClick2已经绑定了组件实例，所以this.handleClick2不用额外绑定，已经指向了组件实例。那为什么还要使用this.handleClick呢？因为React类组件内定义的方法都要使用this调用。
+1. handleClick2，因为是类组件的箭头函数属性，所以会自动绑定到该类组件的实例上，所以handleClick2不用额外绑定，已经指向了组件实例。那为什么还要使用this.handleClick呢？因为React类组件内定义的方法都要使用this调用，与handleClick2内部的this与使用this.handleClick2调用无关。
 ```
-
-3、`this.handleClick()`。
 
 总结一下，类组件的几种`this`：
 1. `render`中`this`，是绑定到类组件实例中的，所以`render`中可以直接通过`this`访问对象的属性、方法等。如果我`handleClick`直接放到`render`里面，则可以直接绑定到render的`this`，比如：
@@ -527,7 +528,7 @@ class MyComponent ectends Component {
 
 ## 12、对象字面量的this
 ## 回答：
-大家可能会疑惑，为什么不像之前的这段代码，`this`绑定的是全局作用域。
+大家可能会疑惑，为什么不像之前的这段代码，这里的`this`绑定的是全局作用域。
 ```js
 const obj = {
     name: 'alice',
@@ -569,17 +570,7 @@ class MyComponent extends React.Component {
 memo和useCallback
 如果考虑性能，不用箭头函数，使用useCallback配合memo，举个例子，分析一下this。
 
-## 14、作用域
-
-## 15、call、apply、bind比较
-
-## 16、传递this等
-
-## 17、闭包
-
-## 18、微任务&宏任务？
-
-## 19、如何通过异步的方式，让代码运行过程中，去执行其他内容，然后完成后才回到当前代码继续执行？
+## 14、如何通过异步的方式，让代码运行过程中，去执行其他内容，然后完成后才回到当前代码继续执行？
 ## 回答：
 使用`await`等待，这样只有执行`resolve`后，`await`才结束。将`resolve/reject`传递到这期间要执行的代码处。代码执行完毕后，执行`resolve`，完成异步等待，这样就可以继续后面的步骤了。
 ```ts
