@@ -75,14 +75,14 @@ export default MyComponent;
 
 
 ### useEventCallback
-us通过自定义 `useEventCallback`，可以简化依赖项的管理，避免闭包陷阱，并保持代码的简洁性。
+通过自定义 `useEventCallback`，可以简化依赖项的管理，避免闭包陷阱，并保持代码的简洁性。
 
 ```js
 export default function Index() {
     const [text, updateText] = useState('Initial value');
     const handleSubmit = useEventCallback(() => {
         console.log(`Text: ${text}`);
-    }, [text]);
+    });
     return (
         <>
             <input value={text} onChange={(e) => updateText(e.target.value)} />
@@ -108,7 +108,7 @@ export default function Index() {
     const [text, updateText] = useState('Initial value');
     const handleSubmit = useEventCallback(() => {
         console.log(`Text: ${text}`);
-    }, [text]);
+    });
     return (
         <>
             <input value={text} onChange={(e) => updateText(e.target.value)} />
@@ -122,7 +122,7 @@ function useEventCallback(fn, dependencies) {
 
     useEffect(() => {
         ref.current = fn;
-    }, [fn, ...dependencies]);
+    });
 
     return useCallback(() => {
         if (ref.current) {
