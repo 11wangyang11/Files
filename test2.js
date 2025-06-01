@@ -1,35 +1,39 @@
-var letterCombinations = function(digits) {
-    const res = [];
-    function backtrack(start, path) {
-        if(path.length === digits.length) {
-            res.push(path);
-            return;
-        }
-        let leftStr = '';
-        let length = 0;
-        if (digits.charAt(start) < '7') {
-            leftStr = String.fromCharCode('a'.charCodeAt(0) + (digits.charAt(start) - '2') * 3);
-            length = 3;
-        } else if (digits.charAt(start) === '7') {
-            leftStr = 'p';
-            length = 4;
-        } else if (digits.charAt(start) === '8') {
-            leftStr = 't';
-            length = 3;
-        } else {
-            leftStr = 'w';
-            length = 4;
-        }
-        console.log('11111', leftStr, length);
-        for(let i = 0; i < length; i++) {
-            path = path + String.fromCharCode(leftStr.charCodeAt(0) + i);
-            backtrack(start + 1, path);
-            path = path.slice(0, -1);
+/**
+回文判断
+ */
+var judge = function(str) {
+    if(!str.length){
+        return false;
+    }
+    let res = true;
+    for(let i = 0;i<str.length/2;i++){
+        if(str[i] !== str[str.length-i-1]){
+            res = false;
+            break;
         }
     }
-    backtrack(0, '');
+    return res;
+}
+var partition = function(s) {
+    const res = [];
+    function backtrack(path, index) {
+        if(index === s.length) {
+            res.push([...path]);
+            return;
+        }
+        for(let i = index; i<s.length; i++) {
+            // i-index满足回文，继续判断下一个
+            const str = s.slice(index, i+1);
+            if(judge(str)){
+                path.push(str);
+                backtrack(path, i+1);
+                path.pop();
+            }
+        }
+    }
+    backtrack([], 0);
     return res;
 };
-
-const res = letterCombinations('23');
+const s = 'aab';
+const res = partition(s);
 console.log(res);
