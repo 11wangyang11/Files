@@ -1,39 +1,22 @@
-/**
-回文判断
- */
-var judge = function(str) {
-    if(!str.length){
-        return false;
-    }
-    let res = true;
-    for(let i = 0;i<str.length/2;i++){
-        if(str[i] !== str[str.length-i-1]){
-            res = false;
-            break;
-        }
-    }
-    return res;
-}
-var partition = function(s) {
-    const res = [];
-    function backtrack(path, index) {
-        if(index === s.length) {
-            res.push([...path]);
-            return;
-        }
-        for(let i = index; i<s.length; i++) {
-            // i-index满足回文，继续判断下一个
-            const str = s.slice(index, i+1);
-            if(judge(str)){
-                path.push(str);
-                backtrack(path, i+1);
-                path.pop();
+var findMin = function(nums) {
+    let start=0,end = nums.length-1;
+    while(start<=end) {
+        const mid = Math.floor((start+end)/2);
+        // 最小值在中间
+        if(nums[start] > nums[end]) {
+            console.log('111', nums[mid], nums[start], nums[end])
+            if(nums[mid] >= nums[start]) { // mid在最小值(旋转位置)的左边，
+                start = mid+1;
+            } else if (mid >0 && nums[mid] > nums[mid-1]) { // mid在最小值右边
+                end = mid-1;
+            } else {
+                return nums[mid]; // mid就是最小值
             }
+        } else {
+            return nums[start];
         }
     }
-    backtrack([], 0);
-    return res;
 };
-const s = 'aab';
-const res = partition(s);
+nums = [3,1,2]
+const res = findMin(nums);
 console.log(res);
