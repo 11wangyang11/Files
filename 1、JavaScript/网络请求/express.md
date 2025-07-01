@@ -129,3 +129,20 @@ app.listen(3000, () => {
 404处理	      在每个分支手动判断	                    统一中间件处理
 错误处理	   需要 try/catch 包裹	                   统一错误处理中间件
 ```
+
+## 3、服务请求+响应的完整路径
+```js
+fetch('https://api.example.com/users', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer your_token' // 身份验证示例
+  },
+  body: JSON.stringify({ // 必须字符串化
+    name: 'John',
+    age: 30
+  })
+})
+```
+
+这里只是皮毛，真正学习后端开发，需要nodejs、express的全面学习。。。。
