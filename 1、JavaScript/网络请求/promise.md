@@ -103,3 +103,38 @@ promise.then((res) => {
 
 2. reject('error'): .then执行(error) => {console.log(error)}，由于抛了异常，所以返回的是一个状态rejected、值为error的Promise对象 ==> .catch执行，返回一个状态fulfilled、值undefined的Promise对象 ==> .finally执行，由于没有return也没有抛异常，所以返回上个原始状态error，结果如下：
 `1 error catch finally undefined`
+
+## 三、await
+`await` 是 JavaScript 中用于处理 Promise 的关键字，它只能在 `async` 函数内部使用。`await` 会暂停 `async` 函数的执行，等待 Promise 的状态变为 resolved（fulfilled）或 rejected，然后恢复函数的执行。当 Promise 被 resolve 时，`await` 会返回 resolve 的值；当 Promise 被 reject 时，`await` 会抛出 reject 的值（通常是一个错误）。
+```javascript
+async function example() {
+  try {
+    const result = await somePromise; // 等待 Promise 完成
+    console.log(result); // 输出 Promise resolve 的值
+  } catch (error) {
+    console.error(error); // 处理 Promise reject 的值
+  }
+}
+```
+
+所以，await相当于是Promise链式调用的替代方案：
+```js
+// Promise链
+fetch(url)
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(err => console.error(err));
+
+// 使用await的等效写法
+async function fetchData() {
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log(data);
+  } catch (err) {
+    console.error(err);
+  }
+}
+```
+
+总的来说，Promise 和 async/await 不是异步处理的必要条件(没有他们也能处理异步方法)，而是工程优化的必然选择。他们标准化异步流程，大大降低了异步方法的处理难度和可读性。
