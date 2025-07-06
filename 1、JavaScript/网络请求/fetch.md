@@ -26,6 +26,8 @@ fetch(`https://api.example.com/data?${params}`)
   .then(/* 处理同上 */)
 ```
 
+当 fetch 请求完成时，返回的 response 对象包含的是**原始二进制响应体数据流（ReadableStream）**。即使服务器返回的是JSON格式的数据，浏览器也不会自动解析它。你需要显式调用 .json() 方法将二进制流转换为 JavaScript 对象。
+
 ## 2、POST请求示例
 ```js
 // 发送 JSON 数据
@@ -76,6 +78,6 @@ Promise.all([
   fetch('/api/user'),
   fetch('/api/posts')
 ])
-.then(responses => Promise.all(responses.map(res => res.json())))
+.then(responses => Promise.all(responses.map(res => res.json()))) // 返回一个新的Promise，该Promise在所有解析完成时才会解决
 .then(([user, posts]) => console.log(user, posts));
 ```
