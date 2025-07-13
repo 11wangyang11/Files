@@ -85,7 +85,7 @@ React 本身是一个用于构建用户界面的 JavaScript 库，它专注于�
 ## 2. **Next.js（最流行的 React 框架）**
    **特点**：
    - **渲染方式灵活**：支持 SSR（服务端渲染）、SSG（静态生成）、CSR（客户端渲染）
-   - **文件系统路由**：基于 `pages` 或 `app` 目录自动生成路由
+   - **文件系统路由**：基于 `pages` 或 `app` 目录自动生成路由  **注意，page route和app router有极大的差异，nextjs都支持**
    - **内置优化**：自动代码分割、图片优化、字体优化等
    - **API 路由**：在同一个项目中编写后端 API
    - **中间件支持**：请求处理中间件
@@ -103,7 +103,7 @@ React 本身是一个用于构建用户界面的 JavaScript 库，它专注于�
 特性	   <a> 标签	                  <Link> 组件
 页面刷新	整页刷新，状态丢失	         无刷新，状态保留
 导航速度	较慢（重新加载所有资源）	  极快（仅加载差异部分）
-预加载	    不支持	                   Next.js 自动预加载视口内链接
+预加载	    不支持	             Next.js 自动预加载视口内链接
 使用场景	外部链接 / 强制刷新	         应用内部导航
 React状态   重置	                  保留
 用户体验	传统页面跳转	            类似单页应用（SPA）的流畅体验
@@ -142,10 +142,11 @@ export default function About() {
 ```
 
 ## 2、SSG和SSR
-1. SSG（静态生成）：getStaticProps
-2. SSR（服务端渲染）：getServiceSideProps
+1. SSG（静态生成）：getStaticProps，只在build执行一次
+2. SSR（服务端渲染）：getServiceSideProps，每次刷新都会调用
 3. ISR（增量静态再生）：revalidate参数
 4. CRS（客户端渲染）：默认行为
+5. RSC（服务端组件）：app router支持，完全直接在服务端渲染返回给前端，js包都不会打包RSC组件给前端
 
 Next.js 提供三种数据获取方法：
 **getStaticProps (SSG - 静态生成)**
@@ -251,12 +252,98 @@ revalidate 是 Next.js 中实现增量静态再生 (Incremental Static Regenerat
  - 用户D在10:01:08访问页面，将得到新生成的页面。
  注意：用户C在10:01:05看到的是旧页面，即使后台重新生成完成，他也不会自动看到新内容，除非他刷新页面（而刷新后，因为缓存已经更新，就会看到新内容）。
 
+## 3、app router和page router
+前面提到了，nextjs支持app router和page router。在 Next.js 中，路由系统（Router）远不止是路径匹配，它实质上是整个应用的架构核心。App Router 和 Pages Router 的差异本质上是两种截然不同的应用架构范式。
+# 3.1 路由即应用骨架
+1. Pages Router：
+基于文件系统的路由 (pages/about.js → /about)，路由文件只是入口点
+→ 数据获取需附加函数 (getServerSideProps)
+
+2. App Router：
+路由是包含元数据的目录结构 (app/about/page.js)
+→ 路由目录天然包含数据获取、布局、模板等完整能力
+
+# 3.2 组件类型的控制中心
+1. Pages Router：
+所有组件默认为客户端组件
+→ 无法使用服务器组件特性
+
+2. App Router：
+路由目录下的 layout/page 等文件默认为服务器组件
+使用'use client'表示客户端组件
+
+# 3.3 SSR
+1. page router的SSR
+```jsx
+// pages/product/[id].js (Pages Router)
+export async function getServerSideProps(context) {
+  // 每次请求时执行
+  const { id } = context.params;
+  const product = await fetchProductFromDB(id);
+  
+  return {
+    props: { product }, // 传递给页面组件
+  };
+}
+
+export default function ProductPage({ product }) {
+  // 这是客户端组件
+  return (
+    <div>
+      <h1>{product.name}</h1>
+      <p>{product.description}</p>
+    </div>
+  );
+}
+```
+
+2. app router的服务端渲染
+```jsx
+// App Router 方式 (app/product/[id]/page.js)
+export default async function ProductPage({ params }) {
+  // 直接在组件中获取数据
+  const product = await db.product.findUnique({
+    where: { id: params.id }
+  });
+  
+  return (
+    <div>
+      <h1>{product.name}</h1>
+      <ProductDescription text={product.description} />
+      {/* 客户端交互组件 */}
+      <AddToCartButton productId={product.id} />
+    </div>
+  );
+}
+```
+性能优势：
+1. **自动代码分割（Automatic Code Splitting）**: 只发送必要的客户端组件代码
+  - 在App Router中，Next.js会基于路由段（route segments）自动进行代码分割。
+  - 在这个例子中，`ProductPage`位于`app/product/[id]/page.js`，所以它会被分割成一个单独的代码块（chunk）。
+  - 同时，该页面中导入的客户端组件（如`AddToCartButton`）也会被分割成单独的chunk，并且只在需要时加载。
+  - 具体体现：
+      - 当用户访问`/product/1`时，浏览器会下载：
+          - 该页面所需的客户端组件（包括`AddToCartButton`）的JavaScript代码。
+          - 不会下载其他路由的代码（比如`/about`页面的代码）。
+      - 如果`ProductDescription`是一个服务器组件，那么它的代码不会发送到客户端，只发送其渲染结果。
+2. **流式渲染（Streaming）**: 优先显示已准备好的内容区块
+  - 流式渲染允许服务器将页面拆分成多个部分（chunks）逐步发送给客户端。
+  - 在这个例子中，如果数据获取（`db.product.findUnique`）比较慢，我们可以使用`Suspense`边界来包裹慢的部分，实现流式渲染。但是，示例代码并没有使用`Suspense`，所以整个页面会等待数据获取完成后一次性发送。
+3. **细粒度缓存（Fine-grained Caching）**: 不同数据设置不同缓存策略
+  - Next.js允许在数据获取时设置缓存策略。
+  - 在App Router中，使用`fetch`时可以配置`next`选项来实现缓存控制。
+  - 但是，示例中使用的是直接数据库查询（`db.product.findUnique`），所以需要手动配置缓存。
+
+这块很复杂，app router是非常核心的知识，以后慢慢总结。。。
+
+## 4、Next.js 如何优化性能（图片、字体、脚本优化等）
 
 
-## 3、网络请求
+
+## 5、网络请求
 网络请求并非next框架知识，这里也介绍一下，澄清他们之间的关系。fetch 不是特定框架的 API，而是一个现代浏览器原生提供的 JavaScript 网络请求接口，也是 Web 标准的一部分。使用方法如下：
 
-# 3.1 原生fetch
+# 5.1 原生fetch
 1. 纯 JavaScript/浏览器环境
 ```js
 // 浏览器中使用.then，IE11 等旧浏览器不支持 async/await
@@ -276,7 +363,7 @@ const data = await res.json();
 import fetch from 'node-fetch';
 ```
 
-# 3.2 nextjs增强fetch
+# 5.2 nextjs增强fetch
 Next.js 对 `fetch()` 的增强主要体现在它扩展了原生的 Web API `fetch`，添加了一些与静态生成（SSG）和服务端渲染（SSR）相关的特殊功能。这些增强功能在 Next.js 的服务端组件和渲染函数（如 `getStaticProps`、`getServerSideProps`）中特别有用。具体如下：
 
 1. 自动缓存与去重
