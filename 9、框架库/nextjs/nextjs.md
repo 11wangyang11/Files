@@ -336,14 +336,10 @@ export default async function ProductPage({ params }) {
 
 这块很复杂，app router是非常核心的知识，以后慢慢总结。。。
 
-## 4、Next.js 如何优化性能（图片、字体、脚本优化等）
-
-
-
-## 5、网络请求
+## 4、网络请求
 网络请求并非next框架知识，这里也介绍一下，澄清他们之间的关系。fetch 不是特定框架的 API，而是一个现代浏览器原生提供的 JavaScript 网络请求接口，也是 Web 标准的一部分。使用方法如下：
 
-# 5.1 原生fetch
+# 4.1 原生fetch
 1. 纯 JavaScript/浏览器环境
 ```js
 // 浏览器中使用.then，IE11 等旧浏览器不支持 async/await
@@ -363,7 +359,7 @@ const data = await res.json();
 import fetch from 'node-fetch';
 ```
 
-# 5.2 nextjs增强fetch
+# 4.2 nextjs增强fetch
 Next.js 对 `fetch()` 的增强主要体现在它扩展了原生的 Web API `fetch`，添加了一些与静态生成（SSG）和服务端渲染（SSR）相关的特殊功能。这些增强功能在 Next.js 的服务端组件和渲染函数（如 `getStaticProps`、`getServerSideProps`）中特别有用。具体如下：
 
 1. 自动缓存与去重
