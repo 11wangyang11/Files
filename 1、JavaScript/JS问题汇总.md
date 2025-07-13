@@ -462,12 +462,12 @@ button.addEventListener('click', callback); // 直接传递函数引用
 ```jsx
 import React, { Component } from 'react';
 
-class MyComponent ectends Component {
+class MyComponent extends Component {
     constructor(props) {
         super(props);
         this.state = { count: 0};
         // 注意，bind是绑定this，call/apply会直接执行方法
-        this.handleClick3 = this.handleClick.bind(this); // 手动绑定`this`
+        this.handleClick = this.handleClick.bind(this); // 手动绑定`this`
     }
 
     // bind绑定this
@@ -491,7 +491,7 @@ class MyComponent ectends Component {
                 <p>Count: {this.state.count}</p>
                 <button id = 'button1' onClick={() => this.handleClick()}>Increment</button>
                 <button id = 'button2' onClick={this.handleClick2}>Increment2</button>
-                <button id = 'button3' onClick={this.handleClick3()}>Increment3</button>
+                <button id = 'button3' onClick={this.handleClick3}>Increment3</button>
             </div>
         );
     }
@@ -543,7 +543,7 @@ obj.greet(); // 输出underfined，因为箭头函数的this是当时所在作�
 ## 13、组件回调方法，如何选择箭头函数和普通函数？
 ## 回答：
 第一，普通函数需要手动绑定`this`，箭头函数会自动绑定当前实例的`this`。
-```ts
+```jsx
 class MyComponent extends React.Component {
     constructor(props) {
         super(props);
@@ -560,7 +560,7 @@ class MyComponent extends React.Component {
     
     render() {
         return (
-            <button onClick={this.handleClick()}>click</button>
+            <button onClick={this.handleClick}>click</button>
         )
     }
 }
@@ -568,7 +568,7 @@ class MyComponent extends React.Component {
 
 第二，
 memo和useCallback
-如果考虑性能，不用箭头函数，使用useCallback配合memo，举个例子，分析一下this。
+如果考虑性能，不用箭头函数，使用useCallback配合memo，举个例子，分析一下this。todo。。。
 
 ## 14、如何通过异步的方式，让代码运行过程中，去执行其他内容，然后完成后才回到当前代码继续执行？
 ## 回答：
