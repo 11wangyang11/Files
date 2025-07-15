@@ -117,7 +117,7 @@ Node.js 实际上与上面两种方案都不同。 首先，Node.js 被称为单
 
 总结来说，异步I/O的流程大致如下： 
 
-![nodejs异步I/O机制](../images/nodejs异步I/nodejs-loop.png) 
+![nodejs异步I/O机制](../images/nodejs-loop.png) 
 
 Node.js 会首先判断是非阻塞 I/O 还是阻塞 I/O，对于非阻塞 I/O（如网络I/O） 会封装成io观察者直接进入`default_loop_stuct`事件循环；对于阻塞 I/O（如文件I/O） 则会给线程池。最后都是通过调用`libuv`事件循环中监听 I/O 完成事件。
 
@@ -816,8 +816,6 @@ readAndWriteFiles();
 ```
 
 当然，即使项目中版本低于ES2017，也可以使用编译器如 Babel 进行转化，具体见tsconfig和babel等工具。
-
-**2、module**
 
 
 ### 五、参考文献
