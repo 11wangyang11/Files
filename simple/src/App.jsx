@@ -1,4 +1,5 @@
 import { Time } from "./components/Time";
+import { Debounce } from "./components/Debounce";
 import "./App.css";
 
 function App() {
@@ -6,6 +7,7 @@ function App() {
     <>
       <div>
         <Time></Time>
+        <Debounce></Debounce>
       </div>
     </>
   );

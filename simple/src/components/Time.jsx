@@ -1,10 +1,9 @@
 import React, { useRef, useState } from "react";
-
 export const Time = () => {
   const timer = useRef();
   const [time, setTime] = useState(0);
 
-  // 使用Date.now()获取最新值
+  // 使用函数式更新time很容易，不使用的话，也使用Date.now()获取最新值或者useRef
   //   const start = () => {
   //     const now = Date.now();
   //     const callback = () => {
@@ -39,6 +38,7 @@ export const Time = () => {
 
   return (
     <div>
+      <div>定时器</div>
       <div>{time}</div>
       <div onClick={start}>start</div>
       <div onClick={pause}>pause</div>
