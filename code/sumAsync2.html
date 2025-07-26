@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sumAsync2</title>
+</head>
+
+<body>
+    <div>sumAsync返回的是Promise对象，这里直接提供两个方法直接调用</div>
+    <input id="inputSum" value="100000" />
+    <button id="start">开始累加</button>
+    <button id="end">结束累加</button>
+    <div>结果：</div>
+    <h1 id="result"></h1>
+    <h1 id="process"></h1>
+    <script>
+        function createSumAsync() {
+            let cancelRequested = false;
+            async function sumAsync(n) {
+                cancelRequested = false; // 重置
+                let i = 0;
+                let sum = 0;
+                try {
+                    while (i <= n) {
+                        if (cancelRequested) {
+                            return new Error('stop summing')
+                        }
+                        let startTime = Date.now()
+                        // 时间片
+                        while (i <= n) {
+                            sum += i;
+                            i++;
+                            document.getElementById('process').innerText = `${i}/${n}`;
+                            if (i % 1000 === 0) {
+                                if (Date.now() - startTime >= 150) {
+                                    break
+                                }
+                            }
+                        }
+                        // 让出主线程
+                        await new Promise(resolve => setTimeout(resolve, 0))
+                    }
+                    return sum
+                } catch(error) {
+                    throw error
+                }
+            }
+
+            function cancel() {
+                cancelRequested = true;
+            }
+
+            return {
+                sumAsync,
+                cancel
+            };
+        }
+        // 初始化功能模块
+        const sumCalculator = createSumAsync();
+        // 事件监听器
+        document.getElementById('start').addEventListener('click', () => {
+            document.getElementById('result').innerText = '';
+            const num = Number(document.getElementById('inputSum').value)
+            if (num > 0) {
+                sumCalculator.sumAsync(num).then((result) => {
+                    document.getElementById('result').innerText = result;
+                }).catch(error => {
+                    document.getElementById('result').innerText = error;
+                });
+            }
+        });
+        document.getElementById('end').addEventListener('click', () => {
+            sumCalculator.cancel();
+        });
+    </script>
+</body>
+
+</html>
