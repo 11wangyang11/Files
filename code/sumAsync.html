@@ -6,9 +6,64 @@
     <title>sumAsync</title>
 </head>
 <body>
-    <div onclick=""></div>
+    <input id="inputSum" value="100000"/>
+    <button id="start">开始累加</button>
+    <button id="end">结束累加</button>
+    <div>结果：</div>
+    <h1 id="result"></h1>
+    <h1 id="process"></h1>
     <script>
-
+        // 全局变量
+        let cancelRequested = false;
+        let isCalculating = false;
+        function sumAsync(maxNum) {
+            return new Promise((resolve, reject) => {
+                let sum = 0;
+                let i = 0;
+                const callback = () => {
+                    let start = Date.now()
+                    while(i <= maxNum) {
+                        sum += i;
+                        i++;
+                        let current = Date.now()
+                        if (cancelRequested) {
+                            reject('stop sum')
+                            return;
+                        }
+                        document.getElementById('process').innerText = `${i}/${maxNum}`;
+                        if (current - start >= 150) {
+                            break;
+                        }
+                    }
+                    if (i >= maxNum) {
+                        console.log(i)
+                        resolve(sum);
+                    } else {
+                        setTimeout(callback, 0);
+                    }
+                }
+                callback()
+            })
+        }
+        document.getElementById('start').addEventListener('click', () => {
+            cancelRequested = false;
+            isCalculating = true;
+            document.getElementById('result').innerText = '';
+            const num = Number(document.getElementById('inputSum').value)
+            sumAsync(num).then((result) => {
+                document.getElementById('result').innerText = result;
+                isCalculating = false;
+            }).catch((err) => {
+                    document.getElementById('result').innerText = err;
+                    isCalculating = false;
+                }
+            )
+        })
+        document.getElementById('end').addEventListener('click', () => {
+            if (isCalculating) {
+                cancelRequested = true
+            }
+        })
     </script>
 </body>
 </html>
