@@ -72,14 +72,12 @@ const useStore = create((set) => ({
 
 // CounterComponent.js
 const CounterComponent = () => {
-  // 只订阅需要的状态和方法
   const { count, increment } = useStore();
   return <button onClick={increment}>Count: {count}</button>;
 };
 
 // UserComponent.js
 const UserComponent = () => {
-  // 只订阅需要的状态和方法
   const { name, setName } = useStore();
   return (
     <div>
