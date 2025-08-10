@@ -1,4 +1,12 @@
 核心问题： 在 React 应用中，如何跨组件（尤其是非父子关系的组件）高效、可预测地共享和管理状态？
+首先，react提供的context是可以的，但是context存在一个问题，useContext是订阅整个state对象，只要 Provider 的 value 变化（新对象），所有 useContext 的子组件都会重新渲染。为了更加精准地更新组件，可以使用第三方的状态管理工具。
+```js
+function ChildA() {
+  const { count } = useContext(MyContext); // 订阅整个state对象，并不是只有count改变才会引起ChildA的更新
+  return <div>{count}</div>;
+}
+```
+
 ## 1、Redux (经典/主流)：
 核心理念：
 1. 单一数据源 (Store)： 整个应用的状态存储在一个 JavaScript 对象树中。
