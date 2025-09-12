@@ -45,7 +45,6 @@ promise.catch((err) => {
 ```
 
 ## 二、Promise链式调用
-todo。。。。
 接下来，我们看这个例子：
 ```js
 getData() {
