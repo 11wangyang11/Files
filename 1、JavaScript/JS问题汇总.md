@@ -566,9 +566,44 @@ class MyComponent extends React.Component {
 }
 ```
 
-第二，
-memo和useCallback
-如果考虑性能，不用箭头函数，使用useCallback配合memo，举个例子，分析一下this。todo。。。
+第二，函数组件中的选择（箭头函数 vs 普通函数）
+1、语义差异（JS 层面）  
+（1）this：函数组件没有组件实例的 this，二者在 this 上没有实际区别；  
+（2）arguments：普通函数有 arguments；箭头函数没有，需要用`...args`；  
+（3）提升：函数声明会提升；`const fn = () => {}`不会提升；  
+（4）构造/原型：普通函数有 prototype、可 new（在函数组件里基本不用）；箭头函数没有。
+
+2、什么时候用箭头函数  
+（1）作为“回调/事件处理器”且需要稳定引用时，常配合`useCallback`：  
+```jsx
+const handleClick = useCallback(() => setCount(c => c + 1), []);
+```
+理由：团队常规写法统一、不可被提前调用（避免提升）、与`useCallback`搭配自然。  
+（2）不依赖`arguments`、不需要 hoisting 的普通工具函数，也可用箭头函数提升一致性。
+
+3、什么时候用普通函数（函数声明）  
+（1）需要 hoisting（在同一渲染中先使用再定义）的场景：  
+```jsx
+handleA(); // 可先调用
+function handleA() {}
+```
+（2）需要`arguments`且不想改成`...args`。  
+（3）偏好具名函数声明提高可读性/调试堆栈时（个人或团队风格）。
+
+4、避免不必要的重渲染  
+无论箭头/普通函数，函数组件每次渲染都会创建新函数；若将回调传给`React.memo`的子组件或放入其他 hook 依赖中，应使用`useCallback`稳定引用：  
+```jsx
+const onSelect = useCallback(function onSelect(id) {
+  setSelectedId(prev => (prev === id ? null : id));
+}, []);
+```
+
+5、实用建议（落地规则）  
+（1）对外传递/被依赖的回调：使用`useCallback`；函数写法随团队约定（箭头或普通都行）；  
+（2）仅在当前组件内部使用的纯工具函数：随意；若性能敏感可提到组件外定义以避免每次重建；  
+（3）若需要 hoisting 或想保留`arguments`：用普通函数声明；  
+（4）其他情况按团队风格选择，保持一致性即可。  
+性能层面二者没有本质差异，关键在于“引用是否稳定”而非“箭头或普通”。
 
 ## 14、如何通过异步的方式，让代码运行过程中，去执行其他内容，然后完成后才回到当前代码继续执行？
 ## 回答：
