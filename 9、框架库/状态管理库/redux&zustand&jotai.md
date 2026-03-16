@@ -177,6 +177,57 @@ const NameEditor = () => {
 }
 ```
 
+上面这个是 Zustand 自己的 `useStore(selector, shallow)` 写法。**如果是 React 原生 Context 的 Provider，也可以用第三方库实现“按片段订阅”的效果**，比如 `use-context-selector`：
+
+```tsx
+import React from 'react'
+import { createContext, useContextSelector } from 'use-context-selector'
+
+type State = {
+  count: number
+  text: string
+  setCount: React.Dispatch<React.SetStateAction<number>>
+  setText: React.Dispatch<React.SetStateAction<string>>
+}
+
+const CounterContext = createContext<State | null>(null)
+
+export const CounterProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
+  const [count, setCount] = React.useState(0)
+  const [text, setText] = React.useState('')
+
+  const value = React.useMemo<State>(
+    () => ({
+      count,
+      text,
+      setCount,
+      setText, // React 自带的 setState 本身是稳定引用
+    }),
+    [count, text, setCount, setText]
+  )
+
+  return <CounterContext.Provider value={value}>{children}</CounterContext.Provider>
+}
+
+// 只订阅 count 相关
+export const Counter = () => {
+  const count = useContextSelector(CounterContext, v => v!.count)
+  const setCount = useContextSelector(CounterContext, v => v!.setCount)
+  return <button onClick={() => setCount(c => c + 1)}>{count}</button>
+}
+
+// 只订阅 text 相关
+export const TextInput = () => {
+  const text = useContextSelector(CounterContext, v => v!.text)
+  const setText = useContextSelector(CounterContext, v => v!.setText)
+  return <input value={text} onChange={e => setText(e.target.value)} />
+}
+```
+
+这里没有像 Zustand 那样的第二个 `shallow` 参数，但通过 selector 把订阅粒度切细，也能避免“Context value 一变，所有 useContext 子组件一起重渲”的问题。
+
+
+
 
 ## 3、Jotai (原子化/Reactish)：
 前面提到，zustand最大的问题我认为就是store中任何状态的改变都会导致所有引用useStore()的组件的重新渲染。虽然可以使用选择器函数来解决，但是感觉整个页面会处处用到。要是能够做到比如`const { name, setName } = useUserStore();`渲染就只依赖我用到的状态那就最好了。这里就得提Jotai了。
