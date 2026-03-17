@@ -1,49 +1,52 @@
 ## 1、问题：JavaScript的Array有哪些方法不会修改原数组？
 ## 回答：
-在JavaScript中，数组的方法可以分为两类：一种是会修改数组本身的方法，另一种是不修改数组本身而是生成新的数组的方法。以下是详细的分类：
+在 JavaScript 中，数组方法可以按“是否修改原数组”分两类。下面把**是否修改**与**返回值**写清楚：
 
-修改数组本身的方法：
+### 修改原数组（mutating）
+1. `push(...items)`：末尾添加元素；**返回值**：新长度（number）
+2. `pop()`：移除末尾元素；**返回值**：被移除的元素（或空数组时为 `undefined`）
+3. `shift()`：移除开头元素；**返回值**：被移除的元素（或空数组时为 `undefined`）
+4. `unshift(...items)`：开头添加元素；**返回值**：新长度（number）
+5. `splice(start, deleteCount?, ...items)`：删除/插入；**返回值**：由“被删除元素”组成的新数组（Array）
+6. `sort(compareFn?)`：原地排序；**返回值**：排序后的**原数组引用**（Array，即返回 `this`）
+7. `reverse()`：原地反转；**返回值**：反转后的**原数组引用**（Array，即返回 `this`）
+8. `fill(value, start?, end?)`：原地填充；**返回值**：填充后的**原数组引用**（Array，即返回 `this`）
+9. `copyWithin(target, start?, end?)`：原地复制覆盖；**返回值**：修改后的**原数组引用**（Array，即返回 `this`）
 
-1. push()：在数组末尾添加一个或多个元素，返回新数组的长度。
-2. pop()：移除数组末尾的一个元素，返回被移除的元素。
-3. shift()：移除数组开头的一个元素，返回被移除的元素。
-4. unshift()：在数组开头添加一个或多个元素，返回新数组的长度。
-5. splice()：从数组中添加或删除元素，返回被删除的元素。
-6. sort()：对数组元素进行排序，返回排序后的数组。
-7. reverse()：颠倒数组中元素的顺序，返回颠倒后的数组。
-7. fill()：用一个固定值填充数组中的元素，返回修改后的数组。
-8. copyWithin()：在数组内部复制元素，返回修改后的数组。
+### 不修改原数组（non-mutating）
+1. `concat(...items)`：合并；**返回值**：新数组（Array）
+2. `slice(start?, end?)`：截取；**返回值**：新数组（Array）
+3. `map(fn, thisArg?)`：映射；**返回值**：新数组（Array）
+4. `filter(fn, thisArg?)`：过滤；**返回值**：新数组（Array）
+5. `flat(depth?)`：拍平；**返回值**：新数组（Array）
+6. `flatMap(fn, thisArg?)`：map 后拍平一层；**返回值**：新数组（Array）
+7. `reduce(fn, initialValue?)`：归约；**返回值**：累计结果（任意类型）
+8. `reduceRight(fn, initialValue?)`：从右归约；**返回值**：累计结果（任意类型）
+9. `join(separator?)`：拼接为字符串；**返回值**：string
+10. `includes(searchElement, fromIndex?)`：是否包含；**返回值**：boolean
+11. `indexOf(searchElement, fromIndex?)`：首次索引；**返回值**：number（找不到为 -1）
+12. `lastIndexOf(searchElement, fromIndex?)`：末次索引；**返回值**：number（找不到为 -1）
+13. `find(fn, thisArg?)`：找元素；**返回值**：匹配的第一个元素（找不到为 `undefined`）
+14. `findIndex(fn, thisArg?)`：找索引；**返回值**：number（找不到为 -1）
+15. `every(fn, thisArg?)`：是否全满足；**返回值**：boolean
+16. `some(fn, thisArg?)`：是否至少一个满足；**返回值**：boolean
+17. `forEach(fn, thisArg?)`：遍历执行副作用；**返回值**：`undefined`
 
-不修改数组本身的方法：
-
-1. concat()：合并两个或多个数组，返回一个新的数组。
-2. slice()：从现有数组中提取一个部分，返回一个新的数组。
-3. map()：对数组中的每个元素调用一个提供的函数，返回一个新的数组。
-4. filter()：对数组中的每个元素调用一个提供的函数，返回一个包含所有通过测试的元素的新数组。
-5. reduce()：对数组中的每个元素执行一个提供的函数，不返回数组，而是返回单个值。
-6. reduceRight()：类似于reduce()，但从右到左执行。
-7. flat()：将多维数组展平成一维数组，返回一个新的数组。
-8. flatMap()：首先对数组中的每个元素调用一个提供的函数，然后将结果展平成一个新数组。
-9. join()：将数组的所有元素连接成一个字符串，不返回数组。
-10. includes()：判断数组是否包含某个元素，不返回数组。
-11. indexOf()：返回数组中某个元素的第一个索引，不返回数组。
-12. lastIndexOf()：返回数组中某个元素的最后一个索引，不返回数组。
-13. find()：返回数组中满足提供的测试函数的第一个元素，不返回数组。
-14. findIndex()：返回数组中满足提供的测试函数的第一个元素的索引，不返回数组。
-15. every()：测试数组中的所有元素是否都通过了提供的函数，不返回数组。
-16. some()：测试数组中的至少一个元素是否通过了提供的函数，不返回数组。
-17. forEach()：对数组中的每个元素执行提供的函数，不返回数组。
-
-总的来说，修改原数组的是少数，都是对原数组进行增删、排序的功能。值得注意的，sort方法也会修改原数组，而新出的`toSorted()`则不改变原数。
+总的来说，修改原数组的多是“增删改/排序/反转”类操作。值得注意的是 `sort()` 会修改原数组；而较新的 `toSorted()`（以及 `toReversed()`、`toSpliced()`）会返回新数组，不改原数组。需要注意的是，map/filter等上面说的不会修改原数组”的含义是：它们自己不会主动改数组结构（不做 push/splice/sort 之类）。
+但你在回调里手动修改原数组（回调里会有原array作为参数），任何方法都拦不住，都会改到原数组。
 
 ## 2、map和forEach比较
 ## 回答：
-1、**map有返回值**，会生成一个新的数组，不会改变原数组。新的数组中的每个元素是原数组经过回调函数处理后的结果。所以，map返回的数组场景与原数组一致。如果我们需要对返回的数组进行判断，可以配合先使用filter过滤，然后使用map创建新数组。
+先区分两个概念：
+- 方法本身是否“修改原数组”（`map/filter` 本身不会改；`forEach` 也不会主动改，只是它的典型用途是做副作用）
+- 你在回调里是否“手动修改原数组/元素”（这会影响原数组，和用哪个方法无关）
+
+1、**map 有返回值**：会生成一个新数组，长度与原数组一致（稀疏数组的空位也会保留空位）。`map` 本身不会修改原数组；但如果你在回调里通过 `array` 或元素引用去改原数组，那原数组仍然会被改。
 ```js
 const newArray = originArray.map((element, index, array) => {
-    // 这里的 array 是原数组
-    return newElement;
-})
+  // 这里的 array 是原数组（同一个引用）
+  return newElement;
+});
 ```
 
 类似的，许多数组方法接受一个回调函数作为参数。回调函数按顺序为数组中的每个元素调用，且最多调用一次，并且回调函数的返回值用于确定方法的返回值。它们都具有相同的方法签名：
@@ -61,10 +64,12 @@ const modifiedWords = words.filter((word, index, arr) => {
 });
 
 console.log(modifiedWords);
+console.log(words);
 // 注意，在长度为 6 以下有三个单词，但是由于它们已经被修改，所以返回一个单词
 // ["spray"]
+// ['spray', 'limit extra', 'exuberant extra', 'destruction extra', 'elite extra', 'present extra', 'undefined extra']
 ```
-不过，这里修改单词仅仅是针对返回的新数组的操作，map、filter等这些都不会改变原数组的。
+注意：`filter` 本身不会修改原数组，但上面回调里手动修改了 `arr`，所以**原数组会被改变**。这属于“回调副作用”，不是 `filter` 的特性。
 
 2、**forEach是没有返回值的**，所以就是单纯的用来执行副操作的，比如:
 ```js
@@ -73,38 +78,40 @@ numbers.forEach(num => {
     console.log(num*2);
 })
 ```
-这里需要注意的是，`forEach`如果在回调函数中通过`array`修改原数组的元素，是会修改原数组的，但是不建议使用。这一点与`map`是不同的。比如：
+这里需要注意：`forEach` 的回调同样能拿到 `array`（原数组引用）。如果你在回调里修改它，原数组当然会被修改，但一般不建议把“遍历”和“结构性修改（push/splice 等）”混在一起。
 ```js
 // 修改元素
 const arr = [1,2,3];
 arr.forEach((value, index, array) => {
-    array[index] = value * 2
+  array[index] = value * 2;
 });
 console.log(arr); // [2,4,6]
 
 // 新增元素
 arr.forEach((value, index, array) => {
-    array.push(value + 3); // 添加新元素，可能会引起死循环
+  array.push(value + 3);
 });
+console.log(arr); // [2, 4, 6, 5, 7, 9]
+// 注意：forEach 遍历的 length 通常在开始时就确定了；push 不会“死循环”，但会让逻辑非常混乱（不建议）
 
 // 删除元素
 arr.forEach((value, index, array) => {
-    if (value === 2) {
-        delete array[index]; // 删除元素，forEach不会跳过空位，删除的索引处会保留underfined
-    }
+  if (value === 2) {
+    delete array[index]; // delete 会制造“空洞(hole)”，不会改变 length
+  }
 });
-console.log(arr); // [1, underfined, 3]
+console.log(arr); // [1, empty, 3]（控制台一般会显示 empty slot；读取该位置值为 undefined）
 ```
 
 ## 3、method(callbackFn, thisArg)的thisArg
 ## 回答：
-thisArg是用来指定回调函数的上下文。如果没有thisArg，回调函数中this会是underfined(在严格模式下)或者指向全局对象(非严格模式下)。举个例子。
+thisArg 是用来指定回调函数的 this。如果没有 thisArg，回调函数中 this 在严格模式下为 `undefined`，非严格模式下可能指向全局对象。举个例子。
 1、不指定thisArg的情况(默认，this的值由上下文决定)
 ```js
 const arr = [1,2,3];
 arr.map(function (element) {
-    consolg.log(this); // 严格模式下为underfined；非严格模式下为window/global
-    return element *2;
+  console.log(this); // 严格模式下为 undefined；非严格模式下为 window/global
+  return element * 2;
 });
 ```
 
