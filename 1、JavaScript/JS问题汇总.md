@@ -129,17 +129,25 @@ const result = arr.map(function (element) {
 ```
 
 3、箭头函数
-需要注意的是，箭头函数是词法绑定的，它会继承定义时的上下文，而不是像普通函数那样动态绑定。意思是，箭头函数在创建的时候，`this`就固定下来了，无法改变。使用`thisArg`对箭头函数无效。因为`thisArg`是map、filter、forEach等方法中的一个参数，用来设置回调函数的`this`。
+需要注意的是，箭头函数是词法绑定的：它的 `this` 继承自定义时的外层作用域，而不是像普通函数那样由调用方式动态绑定。因此，`map/filter/forEach` 等方法传入的 `thisArg` **对箭头函数无效**（this 绑定不会被改变）。
 ```js
 const multiplier = {
-    value: 2,
+  value: 2,
 };
 
-const arr = [1,2,3];
-const result = arr.map((element) => {
-    return element * this.value; // 这里的this可能是window/global，而不是multiplier
+const arr = [1, 2, 3];
+
+// 普通函数：thisArg 生效
+const result1 = arr.map(function (element) {
+  return element * this.value;
 }, multiplier);
-console.log(arr); // [NaN, NaN, NaN]
+console.log(result1); // [2, 4, 6]
+
+// 箭头函数：thisArg 无效（this 来自外层作用域）
+const result2 = arr.map((element) => element * this.value, multiplier);
+// 在模块/严格模式下外层 this 通常是 undefined，这里可能会报错；
+// 在某些非严格脚本环境下外层 this 可能是全局对象，这里可能得到 [NaN, NaN, NaN]。
+console.log(result2);
 ```
 
 ## 4、Array和Set比较
