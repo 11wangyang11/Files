@@ -141,6 +141,91 @@ export default function About() {
 // 无需手动配置路由
 ```
 
+> 📌 **注意**：上面是 Next.js 的"简化版"教学例子（文件名 = URL 1:1 对应）。
+> 真实工业级项目通常会用 **"文件系统路由 + URL 重写"** 的混合模式，下面专门讲。
+
+# 1.1 进阶：URL 重写（真实工业级用法）
+Next.js 原生提供 `rewrites()` 能力，让 **多个 URL 都映射到同一个 page 文件**。这是处理"老 URL 兼容、SEO、A/B 测试、多语言"等场景的标准方案。
+
+```javascript
+// next.config.js
+module.exports = {
+  async rewrites() {
+    return [
+      // 同一个文件 pages/orderdetail.tsx, 接受多个 URL
+      { source: '/hotels/order',                    destination: '/orderdetail' },
+      { source: '/hotels/complete/:id',             destination: '/orderdetail?id=:id' },
+      { source: '/DomesticBook/ShowOrderDetail.aspx', destination: '/orderdetail' },
+    ];
+  },
+};
+```
+
+```bash
+真实访问的 URL                              实际渲染的 page 文件
+─────────────────────────────────────────────────────────────────
+/hotels/order                              pages/orderdetail.tsx  ★
+/hotels/complete/123                       pages/orderdetail.tsx  ★ 同一个
+/DomesticBook/ShowOrderDetail.aspx?id=789  pages/orderdetail.tsx  ★ 还是同一个
+```
+
+# 1.2 携程 NFES (Next.js 封装) 的实际用法
+携程内部用 **NFES** (`@ctrip/nfes-next`) 作为基于 Next.js Pages Router 的全栈框架，把 `rewrites` 封装成 `routerConfig` 数组，专门用于"代码新结构 + 兼容十几年前的老 URL":
+
+```javascript
+// nfes.config.js (真实项目片段)
+routerConfig: [
+  { reg: '/hotels/ctorderdetail',                              pageName: '/orderdetail' },  // 新版
+  { reg: '/hotels/complete/:orderid(\\d+)|/complete',          pageName: '/orderdetail' },  // 老版兼容
+  { reg: '/hotels/vieworder/:orderid(\\d+)|/vieworder',        pageName: '/orderdetail' },  // 更老
+  { reg: '/hotels/order/hotelorderdetail|/NewOrderDetail',     pageName: '/orderdetail' },  // 还更老
+  { reg: '/DomesticBook/ShowOrderDetail.aspx|/internationalbook/ShowOrderDetailNew.aspx',
+    pageName: '/orderdetail' },                                                            // 史前 ASP.NET 时代
+  
+  { reg: '/hotels/checkinvoucher',     pageName: '/checkinvoucher' },
+  { reg: '/hotels/modifyorder',        pageName: '/modifyorder' },
+  // ...
+]
+```
+
+*为什么这么设计*：
+携程订单详情页存在十几年，技术栈换过 4 次（JSP → ASP.NET → Node.js → Next.js）。每次换栈，**用户邮件链接、浏览器书签、App 内硬编码跳转、SEO 收录的 URL** 都还是老 URL。直接换文件名会让所有老链接 404。
+
+*解决方案*：
+- ✅ 代码只在 `pages/orderdetail/` 写一份（新结构清晰）
+- ✅ 通过 `routerConfig` 把所有老 URL 都映射过来（用户感知不到 URL 变化）
+- ✅ 一次重构兼容十几年的历史包袱
+
+# 1.3 三种"路由配置思路"完整对比
+现在你已经见过三种主流的"URL → 渲染哪个组件"的实现思路：
+
+```bash
+方案                       URL 由谁决定                     改源码会怎样
+──────────────────────────────────────────────────────────────────────────
+React Router (代码内联)    <Route path="/about" .../>      路径不变,只是 import 要改
+                          代码里手写
+
+Next.js 标准 (文件系统)     pages/about.js → /about         URL 跟着文件名走
+                          约定 1:1 对应
+
+NFES / Next.js rewrites    pages/orderdetail/ + 配置重写表  文件名只是【内部别名】
+(★ 你公司的 trip-online)   多 URL 映射到同一个 page         URL 由 routerConfig 决定
+
+xtaro (配置清单驱动)        h5.config.js 完全决定一切         源码文件夹改名要同步改 path
+(★ 你公司的 hotel-detail)  支持多端、多 appId 同代码不同 URL  URL 别名不用动
+```
+
+*选型逻辑*：
+```bash
+项目特征                                推荐方案
+────────────────────────────────────────────────────────────────
+小型 SPA / 学习项目                     React Router 或 Next.js 标准
+新建中后台 / 内容站                     Next.js 标准 (文件系统约定)
+要兼容老 URL / SEO 重写                 Next.js rewrites / NFES routerConfig
+跨端 (RN/Web/小程序)、多 appId 部署    xtaro 这种配置清单驱动方案
+```
+
+
 ## 2、SSG和SSR
 1. SSG（静态生成）：getStaticProps，只在build执行一次
 2. SSR（服务端渲染）：getServiceSideProps，每次刷新都会调用
