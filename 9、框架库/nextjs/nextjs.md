@@ -145,7 +145,7 @@ export default function About() {
 1. SSG（静态生成）：getStaticProps，只在build执行一次
 2. SSR（服务端渲染）：getServiceSideProps，每次刷新都会调用
 3. ISR（增量静态再生）：revalidate参数
-4. CRS（客户端渲染）：默认行为
+4. CSR（客户端渲染）：默认行为
 5. RSC（服务端组件）：app router支持，完全直接在服务端渲染返回给前端，js包都不会打包RSC组件给前端
 
 Next.js 提供三种数据获取方法：
