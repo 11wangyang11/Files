@@ -1,0 +1,25 @@
+9、框架库/路由/reactRouter.md
+  ai_agent 310-313,330-331,340,347-348,364-371,374-421,424-429,434-519,521,523,525,529-533,535-536,538-543,545-552,642-650,653-657,660,663,668-676,680-686,689
+  936c922170c71af8 555-564,566-576,579-584,586-588,591,593-595,597-600,602,604-607,609-612,615-622,625-631,634-641,667,679
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15-trip",
+  "base_commit_sha": "121eaf25ac560fe86c1dc33c9964dd86371e34a4",
+  "prompts": {
+    "936c922170c71af8": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "be9129bd-8c92-42d8-8769-434d0f194d76",
+        "model": "claude-opus-4-7",
+        "ide_version": "3.1.15"
+      },
+      "human_author": "yangwang7 <yangwang7@trip.com>",
+      "messages": [],
+      "total_additions": 240,
+      "total_deletions": 365,
+      "accepted_lines": 89,
+      "overriden_lines": 0
+    }
+  }
+}
