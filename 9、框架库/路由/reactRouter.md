@@ -22,7 +22,7 @@ function App() {
   );
 }
 ```
-1. `BrowserRouter`：这是一个路由器组件，它使用HTML5的history API（pushState, replaceState和popstate事件）来保持UI与URL的同步。通常作为整个应用路由的容器。
+1. `BrowserRouter`：这是一个路由器组件，它使用HTML5的history API（pushState, replaceState和popState事件）来保持UI与URL的同步。通常作为整个应用路由的容器。
 2. `Routes`：用于包裹多个`Route`，它会匹配当前URL并只渲染第一个匹配的`Route`对应的组件（在v6中，`Routes`替代了之前的`Switch`）。
 3. `Route`：用于定义路由规则，指定当URL匹配某个路径时应该渲染哪个组件。冒号语法 `:id` 表示 URL 变量，实际值可通过 useParams() 钩子获取。useParams() 是 React Router 库提供的一个内置钩子函数，专门用于获取当前 URL 中的动态参数值。
 4. React Router v6 使用“精确路径匹配”规则。`/` 只匹配根路径，`/products/:id` 只匹配 `/products/` 后跟非空值的路径。
@@ -57,6 +57,57 @@ function App() {
  - 历史遗留系统
 
 
+## 3. 两个独立维度：CSR/SSR × SPA/MPA
+"客户端路由 / 服务端路由"只是表象，真正决定一个项目形态的是**两个互相正交的维度**。
+
+# 1. 维度拆解
+```bash
+维度一：渲染发生在哪？(Rendering)
+   ├── SSR (Server-Side Rendering)：HTML 在服务器拼好
+   └── CSR (Client-Side Rendering)：HTML 在浏览器靠 JS 拼
+
+维度二：有几份 HTML 文档？(Document)
+   ├── MPA (Multi-Page App)：N 份独立 HTML，跳转走整页刷新
+   └── SPA (Single-Page App)：1 份 HTML，跳转靠 history.pushState
+
+⚠️ 这两个维度是【正交】的，4 种组合都存在！
+```
+
+# 2. 2×2 架构矩阵
+```bash
+                 │   MPA（多 HTML，跳转刷新）   │   SPA（1 个 HTML，无刷新切换）
+─────────────────┼──────────────────────────┼──────────────────────────
+   SSR           │   ① 传统 PHP / JSP        │   ② Next.js / Nuxt
+   服务端拼 HTML   │      传统多页应用          │      现代同构应用
+─────────────────┼──────────────────────────┼──────────────────────────
+   CSR           │   ③ 多页 CSR / 多入口      │   ④ Vite + React Router
+   浏览器拼 HTML   │      携程 webapp 架构      │      经典前端脚手架项目
+─────────────────┴──────────────────────────┴──────────────────────────
+```
+
+# 3. 各组合的真实形态
+```bash
+组合              实际表现                                典型项目
+────────────────────────────────────────────────────────────────────────────
+① SSR + MPA      服务器拼完整 HTML,跳转整页刷新           PHP 商城,JSP 后台,WordPress
+② SSR + SPA      首屏服务端拼 + hydrate + 后续客户端路由   Next.js,Nuxt,Remix
+③ CSR + MPA      多个 .html 空壳,各自 JS 渲染             携程 webapp / 多入口大厂 H5
+④ CSR + SPA      一份 index.html,React Router 内部切换    脚手架起的纯前端 SPA
+```
+
+# 4. 各组合的优劣速查
+```bash
+特性              ① SSR+MPA     ② SSR+SPA     ③ CSR+MPA     ④ CSR+SPA
+────────────────────────────────────────────────────────────────────────
+首屏速度           ✅ 快          ✅ 快          ⚠️ 中         ❌ 慢（要等 JS）
+SEO              ✅ 好          ✅ 好          ⚠️ 差         ❌ 差
+跳转体验           ❌ 白屏        ✅ 丝滑        ❌ 白屏       ✅ 丝滑
+状态保持           ❌ 丢          ✅ 保留        ❌ 丢          ✅ 保留
+工程隔离           ✅ 好          ❌ 全打一起     ✅ 业务独立    ❌ 全打一起
+服务器压力         ❌ 高          ⚠️ 中         ✅ 低          ✅ 低
+开发复杂度         ✅ 简单        ❌ 高（同构）   ⚠️ 中         ⚠️ 中
+跨端代码复用       ❌ 无组件       ✅ 有          ✅ 有          ✅ 有
+```
 
 ### 二、SPA为何需要路由系统
 ## 1. 七大核心问题解决方案
