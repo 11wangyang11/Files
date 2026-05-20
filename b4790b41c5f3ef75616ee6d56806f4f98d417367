@@ -1,0 +1,22 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15-trip",
+  "base_commit_sha": "b4790b41c5f3ef75616ee6d56806f4f98d417367",
+  "prompts": {
+    "936c922170c71af8": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "be9129bd-8c92-42d8-8769-434d0f194d76",
+        "model": "claude-opus-4-7",
+        "ide_version": "3.1.15"
+      },
+      "human_author": "yangwang7 <yangwang7@trip.com>",
+      "messages": [],
+      "total_additions": 301,
+      "total_deletions": 1,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
