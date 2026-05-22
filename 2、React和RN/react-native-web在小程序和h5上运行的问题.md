@@ -23,7 +23,27 @@ https://pages.c-ctrip.com/wireless-app/imgs/order_images/invoice/cantVatCommon.p
 我们需求是进入到我们的微信小程序页面然后唤起一个弹窗，引导长按二维码唤起添加企业微信浮层。弹窗也是由市场提供，直接嵌套在我们的react-native页面中。但是，存在一个问题，react-native嵌套的web页面是通过iframe的形式嵌套的，可能是iframe独立的环境与小程序的通讯存在障碍，在iOS的手机上，长按是无法唤起添加企业微信浮层的，只能唤起系统的图片弹窗。
 
 # 解决方案：
-弹窗由我们自己做，避免了iframe嵌套的影响。但是，微信小程序上长按二维码图片可以唤起添加微信浮层，这是微信小程序对web页面存在的默认功能，但前提是需要识别出这是图片，img标签就是图片。但是react-native的Image组件生成的web端代码并不是img标签，所以在微信小程序无法实现该功能。所以，必须使用react的img标签，而不能使用Image组件。所以，这个弹窗代码必须运行在web端，app端是无法运行的。
+弹窗由我们自己做，避免了iframe嵌套的影响。但是，微信小程序上长按二维码图片可以唤起添加微信浮层，这是微信小程序对web页面存在的默认功能，但前提是需要识别出这是图片，img标签就是图片。**但是react-native的Image组件生成的web端代码并不是img标签，往往是div + background-image 或其他包装结构**。所以在微信小程序无法实现该功能。所以，必须使用react的img标签，而不能使用Image组件。所以，这个弹窗代码必须运行在web端，app端是无法运行的。
+
+方案 1：直接靠微信"长按保存"（推荐）
+
+  只要图片是个普通 <img src="...">，用户在 H5
+  里长按就会出现"保存图片"菜单，iOS / Android
+  微信都支持，零成本。
+
+  要点：
+  - 必须是 <img> 标签，不能用
+  background-image、<canvas>
+  渲染——这两种长按没有菜单。canvas 绘制的内容要先
+  canvas.toDataURL() 转成 <img> 再渲染。
+  - 图片域名不需要配业务域名白名单（<web-view>
+  的白名单只约束页面 URL，不约束页面里加载的图片）。
+  - 跨域图片如果走的是 crossorigin +
+  canvas，绕一圈反而可能丢掉长按菜单，能用 <img>
+  就别动 canvas。
+
+方案 2：必须"点按钮一键保存" → 跳回小程序处理
+需要做一层通信，转 到小程序原生api  wx.downloadFile → wx.saveImageToPhotosAlbum 去实现
 
 <!-- ## 项目中混用react标签，react标签的事件无法捕获
 我在reactnative中用了一下button标签，但是点击事件onClick没有反应。而最外层使用的reactnative的按钮组件TouchableOpacity的onPress是会捕获到button冒泡过来的点击事件的。所以，reactnative虽然可以运行在web端，但是事件机制存在差异，虽然可以混合使用react标签。展示没有问题，但是事件触发上存在问题。事件绑定好像没有问题，但是目前不知道为什么。。。。 -->
