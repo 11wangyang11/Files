@@ -76,63 +76,52 @@ export default MyComponent;
 
 **核心观点：useCallback不应该用来缓存函数用的，函数创建很简单；而应该与memo来避免很重的子组件进行不必要更新的问题。**
 
+好的，这是按照你要求修改后的文档内容，使用了同步更新 `ref.current` 的更优实现方式：
+
+---
+
 ### useEventCallback
-通过自定义 `useEventCallback`，可以简化依赖项的管理，避免闭包陷阱，并保持代码的简洁性。
 
-```js
-export default function Index() {
-    const [text, updateText] = useState('Initial value');
-    const handleSubmit = useEventCallback(() => {
-        console.log(`Text: ${text}`);
-    });
-    return (
-        <>
-            <input value={text} onChange={(e) => updateText(e.target.value)} />
-            <ExpensiveTree onClick={handleSubmit} />
-        </>
-    )
-}
-function useEventCallback(fn, dependencies) {
-    const ref = useRef(null);
-    useEffect(() => {
-        ref.current = fn;
-    }, [fn, ...dependencies])
-    return useCallback(() => {
-        ref.current && ref.current(); // 通过ref.current访问最新的回调函数
-    }, [ref])
-}
-```
-上述代码存在优化空间。在 `useEventCallback` 中，`useCallback` 的依赖项应该是空数组 `[]`，而不是 `[ref]`。因为 `ref` 对象本身是稳定的，不需要作为依赖项。优化后代码如下：
-```js
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+通过自定义 `useEventCallback`，可以创建一个**引用永远稳定**的回调函数，同时该回调始终能访问到最新的状态（避免闭包陷阱）。这尤其适合传递给经过 `React.memo` 优化的子组件，防止不必要的重渲染。
+
+```jsx
+import React, { useState, useRef, useCallback } from 'react';
 
 export default function Index() {
     const [text, updateText] = useState('Initial value');
+    
+    // 该回调引用永远不变，但总能打印最新 text
     const handleSubmit = useEventCallback(() => {
         console.log(`Text: ${text}`);
     });
+    
     return (
         <>
-            <input value={text} onChange={(e) => updateText(e.target.value)} />
+            <input 
+                value={text} 
+                onChange={(e) => updateText(e.target.value)} 
+            />
             <ExpensiveTree onClick={handleSubmit} />
         </>
     );
 }
 
-function useEventCallback(fn, dependencies) {
+// 简洁、可靠的 useEventCallback 实现
+function useEventCallback(fn) {
     const ref = useRef(fn);
-
-    useEffect(() => {
-        ref.current = fn;
-    });
-
-    return useCallback(() => {
-        if (ref.current) {
-            ref.current();
-        }
-    }, []);
+    // 每次渲染时同步更新 ref.current，确保总是指向最新的函数
+    ref.current = fn;
+    // 返回一个永远不变的函数，调用时执行 ref.current（最新逻辑）
+    return useCallback(() => ref.current(), []);
 }
 ```
+
+**核心原理**：  
+- `ref.current` 在**渲染阶段**被同步更新为最新的 `fn`。  
+- 返回的 `useCallback` 依赖为空数组，因此其引用**永远不会变化**。  
+- 调用时，通过 `ref.current()` 执行的是最新的 `fn`，从而总能拿到最新的状态。
+
+相比使用 `useEffect` 的方案，此实现**无异步延迟**，且无需手动管理依赖数组，更简洁可靠。
 
 这段代码大家可能会有疑问。。。
 1. 这里useEventCallback方法在组件Index外部，并使用了ref，这是什么用法？  
@@ -220,32 +209,10 @@ function ChatRoom({ roomId }) {
 
 你可能疑惑，为什么eslint设置函数也需要加到依赖项中？因为在 JavaScript 中，函数也是值（一等公民）。如果 getHotelNearbyInfo 是在组件内部定义的，每次组件渲染时都会创建一个新的函数实例。**如果函数依赖组件内的状态或属性，可能会产生闭包问题**。
 
-### 优化自定义 Hook
-
-**如果你正在编写一个 自定义 Hook，建议将它返回的任何函数包裹在 useCallback 中**：
-```jsx
-function useRouter() {
-  const { dispatch } = useContext(RouterStateContext);
-
-  const navigate = useCallback((url) => {
-    dispatch({ type: 'navigate', url });
-  }, [dispatch]);
-
-  const goBack = useCallback(() => {
-    dispatch({ type: 'back' });
-  }, [dispatch]);
-
-  return {
-    navigate,
-    goBack,
-  };
-}
-```
-**这确保了 Hook 的使用者在需要时能够优化自己的代码**。
 
 ### useCallback & useMemo
-1. useMemo是缓存结果，所以使用useMemo的函数必须要有返回值，否则没有意义；
-2. useCallback是缓存函数实例。
+1. useMemo 缓存的是计算结果的返回值，所以传给它的函数必须有一个有意义的返回值（如果返回 undefined，虽然语法允许，但确实没意义）。它主要用于优化昂贵的计算。
+2. useCallback 缓存的是函数实例本身（即同一个函数引用），它并不执行该函数。它主要用于保持函数引用稳定，避免子组件不必要的重渲染。
 
 
 ### 参考文献：
