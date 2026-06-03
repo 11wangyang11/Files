@@ -7,6 +7,11 @@
         this.queue = [];
         this.running = 0;
     }
+
+    // 动态调整并发数
+    setMaxCount(maxCount) {
+        this.maxCount = maxCount;
+    }
     async execute(task, resolve, reject, priority, retryCount) {
         this.running++;
         try {
@@ -32,7 +37,14 @@
         }
     }
     add(url, priority = 0, retryCount = 0) {
-        const task = async () => await fetch(url)
+        // 超时控制
+        const task = () =>
+            Promise.race([
+                fetch(url),
+                new Promise<never>((_, reject) =>
+                    setTimeout(() => reject(new Error('Timeout')), 10000)
+                ),
+            ]);
         return new Promise((resolve, reject) => {
             const position = this.queue.findIndex(item => item.priority < priority);
             this.queue.splice(position === -1 ? this.queue.length : position, 0, { task, resolve, reject, priority, retryCount });
