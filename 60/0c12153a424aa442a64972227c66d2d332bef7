@@ -1,0 +1,30 @@
+test3.ts
+  s_5fd038df58a9d2::t_7dc113445d06b3 88
+  s_5fd038df58a9d2::t_d371ce28375650 68-77
+test2.ts
+  s_a45ad90b056254::t_364d3ccee6c299 37-52
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10-trip",
+  "base_commit_sha": "600c12153a424aa442a64972227c66d2d332bef7",
+  "prompts": {},
+  "sessions": {
+    "s_5fd038df58a9d2": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "80039524-c965-4067-b518-d35f4c56d01f",
+        "model": "composer-2.5"
+      },
+      "human_author": null
+    },
+    "s_a45ad90b056254": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "e086c267-ec5e-4e13-b7e5-fd74c0214bc6",
+        "model": "composer-2.5"
+      },
+      "human_author": null
+    }
+  }
+}
