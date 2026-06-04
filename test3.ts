@@ -79,6 +79,17 @@ Array.prototype.myReduce = function(callback, initialValue) {
     return initialValue
 }
 
+Array.prototype.myFlat = function() {
+    const arr = this
+    const len = arr.length
+    if (len === 0) {
+        return []
+    }
+    return arr.reduce((res, cur) => {
+        return res.concat(Array.isArray(cur) ? cur.myFlat() : cur)
+    }, [])
+}
+
 
 
 const res = arr.myReduce(function (pre, cur, index, arr) {
