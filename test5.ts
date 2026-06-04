@@ -42,7 +42,7 @@ function minDepth(root: RootNode | null) {
 
 /**
  * 平衡二叉树定义： 每个节点高度差不超过1（注意，不是全局叶子深度差，仅仅是节点高度差）
- * Math.max(leftH + rightH) + 1表示节点的高度，不需要判断Math.min之类的进行比较。
+ * Math.max(leftH, rightH) + 1表示节点的高度，不需要判断Math.min之类的进行比较。
  */
 function isBalance(root: RootNode | null) {
     function height(root: RootNode | null) {
@@ -54,7 +54,7 @@ function isBalance(root: RootNode | null) {
         if (leftH === -1 || rightH === -1) {
             return -1
         }
-        return Math.abs(leftH - rightH) > 1 ? -1 : Math.max(leftH + rightH) + 1
+        return Math.abs(leftH - rightH) > 1 ? -1 : Math.max(leftH, rightH) + 1
     }
     return height(root) !== -1
 }

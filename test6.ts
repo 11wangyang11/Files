@@ -158,3 +158,20 @@ function reverseKGroup(head, k) {
     node = node.next
  }
 
+ /**  k个一组反转链表
+    示例：p-1-2-3-4-5-6-7。记录一个伪头p
+    第一：p-3-2-1-4-5-6-7，记录3和1，链接1-4，定位pre：1，cur：4
+    第二：p-3-2-1-6-5-4-7，
+ */
+ function reverseK(root: ListNode, k: number) {
+    // 反正k个
+    function reverse(start: ListNode) {
+        let preHead = new ListNode()
+        let pre = preHead
+        let cur = start
+        for(let i=0; i<k;i++) {
+
+        }
+    }
+ }
+
