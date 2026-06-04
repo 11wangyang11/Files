@@ -1,7 +1,7 @@
 class ListNode {
     val: number
     next: ListNode | null
-    constructor(val = 0, next = null) {
+    constructor(val = 0, next: ListNode | null  = null) {
         this.val = val
         this.next = next
     }
@@ -102,6 +102,55 @@ class ListNode {
     }
     return head
  }
+
+ // k个一组反转链表
+ // p-1-2-3-4-5-6
+ // p-3-2-1, 4-5-6
+ // 
+function reverseKGroup(head, k) {
+    // 检查是否有 k 个节点
+    const check = (node) => {
+        let count = 0;
+        while (node && count < k) {
+            count++;
+            node = node.next;
+        }
+        return count === k;
+    };
+ 
+    // 反转 k 个节点
+    const reverse = (node) => {
+        let prev = null;
+        let curr = node;
+        for (let i = 0; i < k; i++) {
+            const nextTemp = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = nextTemp;
+        }
+        return { newHead: prev, nextGroup: curr };
+    };
+ 
+    // 创建哨兵节点
+    const dummy = new ListNode(0);
+    dummy.next = head;
+    let prevGroup = dummy;
+ 
+    while (check(prevGroup.next)) {
+        const groupFirst = prevGroup.next;
+        const { newHead, nextGroup } = reverse(groupFirst);
+ 
+        // 连接：前一组的尾 -> 当前组的新头
+        prevGroup.next = newHead;
+        // 当前组的第一个节点现在指向下一组
+        groupFirst.next = nextGroup;
+ 
+        // 移动到下一组
+        prevGroup = groupFirst;
+    }
+ 
+    return dummy.next;
+}
 
  let node = deleteNode(head, 3)
  while(node) {

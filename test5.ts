@@ -22,6 +22,131 @@ root.left.right = new RootNode(5)
 root.right.left = new RootNode(6)
 root.right.right = new RootNode(7)
 
+function maxDepth(root: RootNode | null): number {
+    if (!root) { return 0}
+    return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
+}
+
+function minDepth(root: RootNode | null) {
+    if (!root) { 
+        return 0
+    }
+    if (!root.left) {
+        return minDepth(root.right) +1
+    }
+    if (!root.right) {
+        return minDepth(root.left) + 1
+    }
+    return 1 + Math.min(minDepth(root.left), minDepth(root.right))
+}
+
+/**
+ * 平衡二叉树定义： 每个节点高度差不超过1（注意，不是全局叶子深度差，仅仅是节点高度差）
+ * Math.max(leftH + rightH) + 1表示节点的高度，不需要判断Math.min之类的进行比较。
+ */
+function isBalance(root: RootNode | null) {
+    function height(root: RootNode | null) {
+        if (!root) {
+            return 0
+        }
+        const leftH = height(root.left)
+        const rightH = height(root.right)
+        if (leftH === -1 || rightH === -1) {
+            return -1
+        }
+        return Math.abs(leftH - rightH) > 1 ? -1 : Math.max(leftH + rightH) + 1
+    }
+    return height(root) !== -1
+}
+
+/**
+ * 二叉树最大路径和
+ */
+function maxPathSum(root: RootNode | null) {
+    let max = -Infinity
+    function dfs(node: RootNode | null) {
+        if (!node) return 0
+        const leftMax = Math.max(dfs(node.left), 0)
+        const rightMax = Math.max(dfs(node.right), 0)
+        const curMax = node.val + leftMax + rightMax
+        max = Math.max(max, curMax)
+        return node.val + Math.max(leftMax,rightMax)
+    }
+   dfs(root)
+   return max
+}
+
+/**
+ * 从前序遍历与中序遍历构建二叉树
+ *          1
+ *      2        3
+ *    4  5     6   7
+ * preorder [1,2,4,5,3,6,7] 根左右
+ * inorder [4,2,5,1,6,3,7] 左根右
+ */
+function buildTree(preorder: Array<number>, inorder: Array<number>) {
+    if (!preorder.length) return null
+    function dfs(preRootIndex: number, inLeft: number, inRight: number) {
+        if (inLeft > inRight) return null
+        const rootVal = preorder[preRootIndex]
+        let inorderIndex = inLeft
+        for (let i=inLeft;i<=inRight;i++) {
+            if (inorder[i] === rootVal) {
+                inorderIndex = i
+                break
+            }
+        }
+        const node = new RootNode(inorder[inorderIndex])
+        node.left = dfs(preRootIndex+1, inLeft, inorderIndex-1)
+        node.right = dfs(preRootIndex+inorderIndex-inLeft+1, inorderIndex+1, inRight)
+        return node
+    }
+    return dfs(0, 0, preorder.length-1) 
+}
+
+const preorder = [1,2,4,5,3,6,7] 
+const inorder = [4,2,5,1,6,3,7]
+const result = buildTree(preorder, inorder)
+console.log(result)
+
+/**
+ * 二叉树搜索树公共祖先
+ */
+function nearest(root: RootNode | null, p: RootNode, q: RootNode) {
+    if (!root) return null
+    let node: RootNode | null = root
+    while(node) {
+        if (node.val > p.val && node.val > q.val) {
+            node = node.right
+        } else if (node.val < p.val && node.val < q.val) {
+            node = node.left
+        } else {
+            return node
+        }
+    }
+    return null
+}
+/**
+ * 二叉树的序列化和反序列化
+ */
+function serial(root: RootNode | null) {
+    if (!root) return '#'
+    return root.val + ',' + serial(root.left) + ',' + serial(root.right)
+}
+function unSerial(str: string) {
+    const nodeList = str.split(',')
+    function buildNode() {
+        const nodeVal = nodeList.shift()
+        if(nodeVal === '#') return null
+        const node = new RootNode(Number(nodeVal))
+        node.left = buildNode()
+        node.right = buildNode()
+        return node
+    }
+    return buildNode()
+}
+
+
 // 前/中/后序
 function preOrder_1(root) {
     const result: number[] = []
@@ -84,8 +209,6 @@ function inOrder(root) {
     return result
 }
 
-const res = inOrder(root)
-console.log(res)
 
 class BST {
     private root: RootNode | null
