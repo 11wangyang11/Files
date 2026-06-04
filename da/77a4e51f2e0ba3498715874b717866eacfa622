@@ -1,0 +1,19 @@
+test5.ts
+  s_535c455b0a3662::t_e3f92e97843f66 182-314
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10-trip",
+  "base_commit_sha": "da77a4e51f2e0ba3498715874b717866eacfa622",
+  "prompts": {},
+  "sessions": {
+    "s_535c455b0a3662": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "1feb3c45-0d79-4778-908f-34376d30b1cb",
+        "model": "composer-2.5"
+      },
+      "human_author": "yangwang7 <yangwang7@trip.com>"
+    }
+  }
+}
