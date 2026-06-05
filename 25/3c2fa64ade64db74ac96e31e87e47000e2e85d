@@ -1,0 +1,34 @@
+test5.ts
+  s_48a62751f3b35c::t_b6d1499b229799 25
+  s_48a62751f3b35c::t_d763bb1d197f62 30
+  s_48a62751f3b35c::t_9b7a65e5ac1110 147
+  s_48a62751f3b35c::t_e515c8ec4147df 149
+test7.ts
+  s_8a249f7d193dba::t_e4e0eaf64ecb44 34
+  s_8a249f7d193dba::t_dbdab7635d91a6 7
+  s_8a249f7d193dba::t_fc87e80151ab66 54-58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10-trip",
+  "base_commit_sha": "253c2fa64ade64db74ac96e31e87e47000e2e85d",
+  "prompts": {},
+  "sessions": {
+    "s_48a62751f3b35c": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "448aacf1-1a2a-4a88-91dd-6db96f6ae03f",
+        "model": "composer-2.5"
+      },
+      "human_author": null
+    },
+    "s_8a249f7d193dba": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "86e08e06-5e88-4f7f-bc91-d5ed3e05ec49",
+        "model": "composer-2.5"
+      },
+      "human_author": "yangwang7 <yangwang7@trip.com>"
+    }
+  }
+}
