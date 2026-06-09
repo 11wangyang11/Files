@@ -1,0 +1,28 @@
+5、编译打包/编译打包.md
+  s_bc9c4f7616d5d2::t_3fa540648010c6 1114,1116-1129
+  s_bc9c4f7616d5d2::t_8f4e2ea839f40f 71-72,74-95,97-101,103-114,116-135,137-160
+  s_bc9c4f7616d5d2::t_230d8c4a1bda44 162-205,207-253,255-280
+  s_bc9c4f7616d5d2::t_9c062441d827c0 335-351,373-413,415-434,436-441,452-455
+  s_bc9c4f7616d5d2::t_ce68846aebd346 507
+  s_bc9c4f7616d5d2::t_f830507745a427 288-334,352-372,414,435,442-451,456-480
+  s_bc9c4f7616d5d2::t_3231d7c7ed6da1 782-889
+  s_bc9c4f7616d5d2::t_ab4063f805015d 1191,1194-1204,1207-1208,1213-1215,1217-1408
+  s_bc9c4f7616d5d2::t_1b0755b6d43935 571,573-766
+  s_bc9c4f7616d5d2::t_6586f877a52bf1 890-1113,1115,1130
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10-trip",
+  "base_commit_sha": "daad4ed486baf8de2c05e25700016e1f950233b6",
+  "prompts": {},
+  "sessions": {
+    "s_bc9c4f7616d5d2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5555f97b-fe05-4db4-be30-c8e07c301a18",
+        "model": "global.anthropic.claude-haiku-4-5-20251001-v1:0"
+      },
+      "human_author": "yangwang7 <yangwang7@trip.com>"
+    }
+  }
+}
