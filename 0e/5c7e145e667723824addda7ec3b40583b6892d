@@ -1,0 +1,28 @@
+9、框架库/nextjs/nfes.md
+  s_08f93fcab70386::t_b584cb2de066f1 1-2,4-73,77-80,92-93,95-96,101-123,129,182-184
+  s_ca67b70daa12c7::t_0a1c9c388b7d7b 135-178,219-220
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10-trip",
+  "base_commit_sha": "0e5c7e145e667723824addda7ec3b40583b6892d",
+  "prompts": {},
+  "sessions": {
+    "s_08f93fcab70386": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "b44c6352-5494-45c8-81e4-5c08d03183ea",
+        "model": "composer-2.5"
+      },
+      "human_author": "yangwang7 <yangwang7@trip.com>"
+    },
+    "s_ca67b70daa12c7": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "114b8b5e-9e4a-4ef3-9ce0-19d25e8562df",
+        "model": "composer-2.5"
+      },
+      "human_author": "yangwang7 <yangwang7@trip.com>"
+    }
+  }
+}
