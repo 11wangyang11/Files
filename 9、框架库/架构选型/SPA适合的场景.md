@@ -35,7 +35,7 @@ SaaS 产品 (Notion/Figma)   ⭐⭐⭐⭐⭐  应用化体验
 
 *典型 MPA 项目*：
 ```bash
-携程多页 CSR (CRN-Web)     ⭐⭐⭐⭐⭐  多团队 + 多调用方 + App 嵌入
+公司多页 CSR (CRN-Web)     ⭐⭐⭐⭐⭐  多团队 + 多调用方 + App 嵌入
 内容型网站 (新闻/博客)     ⭐⭐⭐⭐⭐  SEO 第一、首屏快、交互少
 电商商品详情页              ⭐⭐⭐⭐    SEO + 多入口 + 一次性流程
 政府 / 银行 / 表单系统      ⭐⭐⭐⭐    简单、稳定、SEO 不重要也不亏
@@ -122,7 +122,7 @@ Q3. 跳过去的页面【依赖】当前页的全局 state 吗?
 纯 SPA         Vite + React Router      <Link>                单团队后台、应用类
 纯 MPA         传统 PHP / WordPress     <a href>              内容型网站、表单系统
 SSR + SPA      Next.js / Remix          首屏 SSR + Link       内容 + 应用混合
-多页 CSR       携程 CRN-Web / xtaro     location.href 跨页    多团队 + 多调用方
+多页 CSR       公司 CRN-Web / xtaro     location.href 跨页    多团队 + 多调用方
 SSG            Astro / Hugo             a href / 部分 hydrate  纯静态内容站
 混合 SSR        Next.js + 多 entry       Link 内 + href 跨     大型企业应用
 ```

@@ -4,7 +4,7 @@
 
 ---
 
-# Next.js 核心知识
+# 第一章、Next.js 核心知识
 
 ## 一、Next.js 与 React 的关系
 
@@ -253,9 +253,9 @@ export default function LikeButton({ productId }) {
 module.exports = {
   async rewrites() {
     return [
-      { source: '/hotels/order', destination: '/orderdetail' },
-      { source: '/hotels/complete/:id', destination: '/orderdetail?id=:id' },
-      { source: '/DomesticBook/ShowOrderDetail.aspx', destination: '/orderdetail' },
+      { source: '/hotels/order', destination: '/testpage' },
+      { source: '/hotels/complete/:id', destination: '/testpage?id=:id' },
+      { source: '/DomesticBook/ShowOrderDetail.aspx', destination: '/testpage' },
     ];
   },
 };
@@ -265,13 +265,13 @@ module.exports = {
 - 兼容旧系统 URL（如从 JSP/ASP.NET 迁移）。
 - SEO 重定向或 A/B 测试。
 
-### 携程 NFES 案例（基于 Pages Router + rewrites）
+### NFES 案例（基于 Pages Router + rewrites）
 ```js
 // nfes.config.js
 routerConfig: [
-  { reg: '/hotels/orderdetail', pageName: '/orderdetail' },        // 新版
-  { reg: '/hotels/complete/:orderid', pageName: '/orderdetail' }, // 老版兼容
-  { reg: '/DomesticBook/ShowOrderDetail.aspx', pageName: '/orderdetail' }, // 史前
+  { reg: '/hotels/testpage', pageName: '/testpage' },        // 新版
+  { reg: '/hotels/complete/:orderid', pageName: '/testpage' }, // 老版兼容
+  { reg: '/DomesticBook/ShowOrderDetail.aspx', pageName: '/testpage' }, // 史前
 ];
 ```
 **设计思想**：页面文件是内部实现细节，对外 URL 完全由配置表控制，实现历史链接的平滑迁移。
@@ -333,7 +333,7 @@ const res = await fetch('https://api.example.com/products', {
 
 ---
 
-# 订单详情页面方案选择
+# 第二章、订单详情页面方案选择
 ## 一、使用 Next.js 的推荐方案
 
 ### 1. 首屏大服务请求 → 使用 **SSR（`getServerSideProps`）** 或 **ISR（`getStaticProps + revalidate`）**

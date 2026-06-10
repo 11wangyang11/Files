@@ -81,7 +81,7 @@ function App() {
    服务端拼 HTML   │      传统多页应用          │      现代同构应用
 ─────────────────┼──────────────────────────┼──────────────────────────
    CSR           │   ③ 多页 CSR / 多入口      │   ④ Vite + React Router
-   浏览器拼 HTML   │      携程 webapp 架构      │      经典前端脚手架项目
+   浏览器拼 HTML   │      公司 webapp 架构      │      经典前端脚手架项目
 ─────────────────┴──────────────────────────┴──────────────────────────
 ```
 
@@ -91,7 +91,7 @@ function App() {
 ────────────────────────────────────────────────────────────────────────────
 ① SSR + MPA      服务器拼完整 HTML,跳转整页刷新           PHP 商城,JSP 后台,WordPress
 ② SSR + SPA      首屏服务端拼 + hydrate + 后续客户端路由   Next.js,Nuxt,Remix
-③ CSR + MPA      多个 .html 空壳,各自 JS 渲染             携程 webapp / 多入口大厂 H5
+③ CSR + MPA      多个 .html 空壳,各自 JS 渲染             公司 webapp / 多入口大厂 H5
 ④ CSR + SPA      一份 index.html,React Router 内部切换    脚手架起的纯前端 SPA
 ```
 
@@ -371,7 +371,7 @@ function ProductDetail() {
 ```
 
 
-## 3. 携程 CRN-Web 的特殊性
+## 3.公司 CRN-Web 的特殊性
 > 上面三种技术是**纯 Web SPA 项目**（Vite / Webpack）的标准玩法。但携程的 RN-to-Web 框架 (CRN-Web) 走的是 **RN 共享代码 + 多页 CSR 部署** 的路线，**第 1 项"代码分割+懒加载"用不了**。这一节解释为什么、以及替代方案。
 
 # 1. 根因：Metro 不支持动态 import

@@ -246,7 +246,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: 'orders', element: <Orders />, loader: ordersLoader },
-      { path: 'orders/:id', element: <OrderDetail />, loader: orderLoader },
+      { path: 'orders/:id', element: <TextPage />, loader: orderLoader },
     ],
   },
 ]);
