@@ -36,18 +36,20 @@ type MyExclude<T, U> = T extends U ? never : T
 
 // 7. `ReturnType`（Medium）
 //题目：获取函数返回类型。
-
+type MyReturnType<T extends (...args: any) => any> = T extends (...args: any) => infer U ? U : any
 
 // 8. `Omit`（Medium）
 //题目：实现 `MyOmit<T, K>`，从 T 中排除 K 属性。
-
-
+type MyOmit<T, K extends keyof T> = {
+    [P in Exclude<keyof T, K>]: T[P]
+}
+type x = MyOmit<{a: number, b: string}, 'a'>
 // 9. `DeepReadonly`（Medium）
 //题目：深度只读（我们刚才讲解的）。
 
 // 注意：上面用 Record<string, unknown> 比 object 更精确（排除函数等）
 
-
 // 10. `TupleToUnion`（Medium）
 //题目：将元组转换为联合类型。
+type TupleToUnion<T extends any[]> = T[number]
 
