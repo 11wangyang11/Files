@@ -1,0 +1,19 @@
+11、AI/2.L0-神经网络与Transformer架构.md
+  s_678b0c5fed59c5::t_3fe0d456c84cfc 119-258
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.17-trip",
+  "base_commit_sha": "2a89e8550dbc201b86f8758904ddc2b7462751b1",
+  "prompts": {},
+  "sessions": {
+    "s_678b0c5fed59c5": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "507f72ec-35c9-47cb-97a1-f1af2647dbb7",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "yangwang7 <yangwang7@trip.com>"
+    }
+  }
+}
