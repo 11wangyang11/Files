@@ -1,0 +1,46 @@
+11、AI/2.L0-神经网络与Transformer架构.md
+  s_678b0c5fed59c5::t_7b280a5485eae7 87-88
+  s_0651ac8a69aa44::t_0b1fe9658b6c16 1-86,89-214,285-293
+  s_0651ac8a69aa44::t_ccd92751862084 215-284
+11、AI/5.L3-RAG与Agent.md
+  s_0651ac8a69aa44::t_3b01bde166cdb4 1-213,304-314
+  s_0651ac8a69aa44::t_c88e2c56e91008 214-303
+11、AI/4.L2-模型推理与采样.md
+  s_0651ac8a69aa44::t_597da9342c4da9 1-31,37-167,229-238
+  s_0651ac8a69aa44::t_e3f9a1c364bff2 168-228
+  s_678b0c5fed59c5::t_d1b744521b9bb4 32
+  s_678b0c5fed59c5::t_80470a799ec19b 33-36
+11、AI/6.L4-工程落地与运维.md
+  s_0651ac8a69aa44::t_94dc793aafd05f 1-165,223-232
+  s_0651ac8a69aa44::t_95ed8d6011f98c 166-222
+11、AI/1.全流程.md
+  s_0651ac8a69aa44::t_55a8d6eec0f26c 3-6,14-188
+  s_0651ac8a69aa44::t_0b6325455be2ff 7-13
+11、AI/3.L1-模型训练与微调.md
+  s_0651ac8a69aa44::t_e644ab40d73b42 195-240
+  s_0651ac8a69aa44::t_2bda4f018dffde 1-194,241-250
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.17-trip",
+  "base_commit_sha": "e811d7b09807bf13295778791e7656a6e0bb41c3",
+  "prompts": {},
+  "sessions": {
+    "s_0651ac8a69aa44": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "0c4aa1ec-a9f6-44af-b9ec-51720cf9a9b2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "yangwang7 <yangwang7@trip.com>"
+    },
+    "s_678b0c5fed59c5": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "507f72ec-35c9-47cb-97a1-f1af2647dbb7",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "yangwang7 <yangwang7@trip.com>"
+    }
+  }
+}
