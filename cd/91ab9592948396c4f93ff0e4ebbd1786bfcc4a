@@ -1,0 +1,25 @@
+9、框架库/架构选型/前端项目架构与路由.md
+  s_5db587075c0731::t_dd4d560f77edd2 38-43
+  s_5db587075c0731::t_7b6991c687fb50 11-12,14-15,17
+  s_5db587075c0731::t_3284fe2ddd8bf5 34-35
+  s_5db587075c0731::t_71e7121ac99ed7 27-32
+  s_5db587075c0731::t_3c6c4e7445626e 51-58
+  s_5db587075c0731::t_eaeb651d77b9e1 13,16
+  s_5db587075c0731::t_b601e693104d90 72-79
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.17-trip",
+  "base_commit_sha": "cd91ab9592948396c4f93ff0e4ebbd1786bfcc4a",
+  "prompts": {},
+  "sessions": {
+    "s_5db587075c0731": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2e984c23-054f-41d1-8caf-bab063652da1",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "yangwang7 <yangwang7@trip.com>"
+    }
+  }
+}
