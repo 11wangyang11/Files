@@ -1,0 +1,22 @@
+9、框架库/架构选型/monorepo-spa-结构示例.md
+  s_5db587075c0731::t_307b62bb7e4911 1-188,190-195,215-226,228-238,240-266,315-361
+  s_5db587075c0731::t_4e4459ff33ac47 267-314
+  s_5db587075c0731::t_78b4dea0d11dd9 189,196,198-212
+  s_5db587075c0731::t_9f15aeeb39a418 213
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.17-trip",
+  "base_commit_sha": "6cc132afaec46e1451c229e0550b568793995fe9",
+  "prompts": {},
+  "sessions": {
+    "s_5db587075c0731": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2e984c23-054f-41d1-8caf-bab063652da1",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "yangwang7 <yangwang7@trip.com>"
+    }
+  }
+}
