@@ -1,0 +1,25 @@
+11、AI/1.全流程.md
+  s_f946c3c6c9ccd0::t_9725adaf8e0b00 278
+  s_f946c3c6c9ccd0::t_d1d5c8d54e5e25 137-140
+  s_f946c3c6c9ccd0::t_1559e9082ecac3 150-151
+  s_f946c3c6c9ccd0::t_6759b091234a7f 141
+11、AI/7.Spec规约驱动开发与Cursor实操.md
+  s_f946c3c6c9ccd0::t_5caac81c65467d 1-97,99,101,104-106,108-109,117-119,121,123,125,127,133-139,141,143-152,154-166,168-193,195-210
+  s_f946c3c6c9ccd0::t_1f74a549bbcceb 98,100,102-103,107,110-116,120,122,124,126,128-132
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.17-trip",
+  "base_commit_sha": "bb57069838f4c6328ab1a482ef702fa937d501fb",
+  "prompts": {},
+  "sessions": {
+    "s_f946c3c6c9ccd0": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "619c82c7-4150-4543-90d7-b30de7fab86d",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "yangwang7 <yangwang7@trip.com>"
+    }
+  }
+}
