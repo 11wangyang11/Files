@@ -1,0 +1,28 @@
+7、计算机网络/websocket.md
+  s_3ee2f78b0d3cd0::t_1f62f1ed859d18 1-138,170-181
+  s_c943fd62c20fa7::t_c6cd76e985079a 139-169
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.18-trip",
+  "base_commit_sha": "cd8624205d82d4e72c7379f02b360d0e119b62d1",
+  "prompts": {},
+  "sessions": {
+    "s_3ee2f78b0d3cd0": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "8e7f3a64-0d45-4e85-a543-de027bbd51f1",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "yangwang7 <yangwang7@trip.com>"
+    },
+    "s_c943fd62c20fa7": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "0b107ac6-216b-41ee-9420-32b6ffc3be01",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": null
+    }
+  }
+}
