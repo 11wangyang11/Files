@@ -1,0 +1,24 @@
+12、iOS/1.swift.md
+  s_d193ff40e7f9e3::t_c1df37412f4593 330-366
+  s_d193ff40e7f9e3::t_5ce9a3d0563904 17
+  s_d193ff40e7f9e3::t_e3b9d8d62684c4 367-423
+  s_d193ff40e7f9e3::t_96478db9025118 424-456
+  s_d193ff40e7f9e3::t_208ab3751bf587 42-85
+  s_d193ff40e7f9e3::t_7c35c6d6fddcca 228-283
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.18-trip",
+  "base_commit_sha": "a7635df742d49220f880e7d060fe166349c974f7",
+  "prompts": {},
+  "sessions": {
+    "s_d193ff40e7f9e3": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "6d484cb9-da11-43d5-818b-16dcb9fa0e41",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "yangwang7 <yangwang7@trip.com>"
+    }
+  }
+}
